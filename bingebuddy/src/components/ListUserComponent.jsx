@@ -8,11 +8,9 @@ const ListUserComponent = () => {
     const [users, setUsers] = useState([])
     const navigator = useNavigate(); 
 
-
     useEffect(() => {
         getAllUsers();
     }, []) 
-
 
     function getAllUsers(){
         listUsers()
@@ -30,7 +28,6 @@ const ListUserComponent = () => {
     function updateUser(id){
         navigator(`/edit-user/${id}`);   
     }
-
 
   return (
     <div className='container'>
@@ -61,7 +58,6 @@ const ListUserComponent = () => {
                         </tr>)
                 }
                 <tr>
-
                 </tr>
             </tbody>
         </table>
@@ -71,3 +67,4 @@ const ListUserComponent = () => {
 }
 
 export default ListUserComponent
+
