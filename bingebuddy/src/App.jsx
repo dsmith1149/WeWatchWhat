@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import ListUserComponent from './components/ListUserComponent'
 import UserComponent from './components/UserComponent'
+import HeaderComponent from './components/HeaderComponent'
 
 
 
@@ -11,8 +12,8 @@ function App() {
 
   return (
     <>
-    {/* <h1> BingeBuddy Movie App </h1> */}
       <BrowserRouter>
+      <HeaderComponent />
         <Routes>
           <Route path='/' element={<ListUserComponent />}></Route>
           <Route path='/users' element={<ListUserComponent />}></Route>

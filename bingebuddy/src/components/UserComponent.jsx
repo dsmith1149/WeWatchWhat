@@ -8,10 +8,8 @@ const UserComponent = () => {
     const[lastName, setLastName] = useState('')
     const[email, setEmail] = useState('')
 
-    // useParams returns a key:value pair; here, we want want the key
     const {id} = useParams();
-
-    // use useState hook to initialize state variables that will hold validation errors
+   
     const [errors, setErrors] = useState({
         firstName:'',
         lastName:'',
@@ -36,7 +34,6 @@ const UserComponent = () => {
 
     const handleLastName = (e) => setLastName(e.target.value);
     
-    // Regular function
     function handleEmail(e){           
         setEmail(e.target.value);
     }
@@ -44,21 +41,20 @@ const UserComponent = () => {
     function saveOrUpdateUser(e){
         e.preventDefault();
 
-        if(validateForm()){       // validateForm() returns valid variable  with value true or false
+        if(validateForm()){       
             
             const user = {firstName, lastName, email}
             console.log(user); 
 
-            // if employeeId is present in the url, then we can execute the logic for Update Employee
             if(id){
                 updateUser(id, user).then((response) => {
                     console.log(response.data);
-                    navigator('/users');    // after task is done, take back to all employees page
+                    navigator('/users');    
                 }).catch(error => {
                     console.log(error);
                 })
             }
-            else{       // employeeId not found then create add new employee
+            else{       
                 createUser(user).then((response) => {
                     console.log(response.data);
                     navigator('/users');

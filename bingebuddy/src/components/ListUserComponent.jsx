@@ -24,11 +24,11 @@ const ListUserComponent = () => {
     }
 
     function addNewUser(){
-        navigator('/add-user') // when Add Employee button is clicked, will take user to /add-employee page
+        navigator('/add-user') 
     }
 
     function updateUser(id){
-        navigator(`/edit-user/${id}`);   // use backtick to enclose url, don't use single quotes
+        navigator(`/edit-user/${id}`);   
     }
 
 
