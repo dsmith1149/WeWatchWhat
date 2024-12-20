@@ -26,7 +26,7 @@ const ListUserComponent = () => {
     }
 
     function updateUser(id){
-        navigator(`/edit-user/${id}`);   
+        navigator(`/update-user/${id}`);   
     }
 
   return (
