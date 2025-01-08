@@ -8,7 +8,6 @@ const FooterComponent = () => {
                 &copy; 2024-25 LaunchCode LiftOff team Ctrl+Alt+Elite
             </span>
         </footer>
-
     </div>
   )
 }
