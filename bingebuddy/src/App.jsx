@@ -9,6 +9,7 @@ import NavBarComponent from './components/NavBarComponent'
 import LoginPageComponent from './components/LoginPageComponent'
 import SearchMovieComponent from './components/SearchMovieComponent'
 import SearchUserComponent from './components/SearchUserComponent'
+import SignUpPageComponent from './components/SignUpPageComponent'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePageComponent />}></Route>
           <Route path='/login' element={<LoginPageComponent />}></Route>
+          <Route path='/signup' element={<SignUpPageComponent />}></Route>
           <Route path='/search-movie' element={<SearchMovieComponent />}></Route>
           <Route path='/search-user' element={<SearchUserComponent />}></Route>
           <Route path='/list-users' element={<ListUserComponent />}></Route>

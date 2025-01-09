@@ -1,13 +1,54 @@
 
-import React from 'react'
+import React, {useState} from 'react'
+import axios from 'axios'
+import '../App.css';
 
-const LoginPageComponent = () => {
+
+const LoginPageComponent = ({ onLogin }) => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState(false);
+
+
+  const handleLogin = async () => {
+    try {
+      console.log("Login successful");
+
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+    setLoginSuccess(true);
+  }
+
+  if (loginSuccess) {
+    return (
+    <div className='centered-container'>
+      <div className="login-container">
+        <h1>Logged in successfully</h1>
+      </div>
+
+    </div>);
+  }
+
   return (
-    <div>
-        <h1 className='center'>             
-            Login Page
-        </h1>
-    </div>
+
+    <div className="container login-container">
+      <div className="login-form">
+        <h2 className="text-center header">Login to your Account</h2>
+
+        <div className="input-container">
+          <input type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="input-container">
+          <input type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <div className="input-container">
+          <button className = "btn btn-primary mb-2 login-button" type = "button" onClick={handleLogin}>Login</button>
+        </div>
+      </div>
+  </div>
+
   )
 }
 
