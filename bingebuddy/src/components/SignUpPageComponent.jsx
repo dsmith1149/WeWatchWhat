@@ -67,4 +67,5 @@ const SignUpPageComponent = () => {
   )
 }
 
+
 export default SignUpPageComponent
