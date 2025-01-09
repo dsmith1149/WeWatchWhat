@@ -5,6 +5,7 @@ import { useNavigate, useParams} from 'react-router-dom'
 const UserComponent = () => {
 
     const[email, setEmail] = useState('')
+    const[userName, setUserName] = useState('')
     const[firstName, setFirstName] = useState('')
     const[lastName, setLastName] = useState('')
     const[genre1, setGenre1] = useState('')
@@ -14,6 +15,7 @@ const UserComponent = () => {
    
     const [errors, setErrors] = useState({
         email:'',
+        userName:'',
         firstName:'',
         lastName:'',
         genre1:'',
@@ -27,6 +29,7 @@ const UserComponent = () => {
             if(id){
                 getUser(id).then((response) => {
                     setEmail(response.data.email);
+                    setUserName(response.data.userName);
                     setFirstName(response.data.firstName);
                     setLastName(response.data.lastName);
                     setGenre1(response.data.genre1);
@@ -49,7 +52,7 @@ const UserComponent = () => {
 
         if(validateForm()){       
             
-            const user = {email, firstName, lastName, genre1, genre2}
+            const user = {email, userName, firstName, lastName, genre1, genre2}
             console.log(user); 
 
             if(id){
@@ -85,6 +88,11 @@ const UserComponent = () => {
             valid = 'false';
         }
         
+        if(userName.trim()){
+            errorsCopy.userName = '';
+        }
+
+
         if(firstName.trim()){   
             errorsCopy.firstName = '';
         }
@@ -156,6 +164,20 @@ const UserComponent = () => {
                             {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
                         </div>
 
+                        <div>
+                            <label className='form-label'> Username: </label>
+                            <input
+                                type='text'
+                                placeholder='Email will be used in posts if username is not provided'
+                                name='userName'
+                                value={userName}
+                                className={`form-control ${errors.userName ? 'is-invalid' : ''}`}
+                                onChange={(e) => setUserName(e.target.value)}
+                            >
+                            </input>
+                            {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
+                        </div>
+
                         <div className='form-group mb-2'>
                             <label className='form-label'> First Name: </label>
                             <input
@@ -184,7 +206,7 @@ const UserComponent = () => {
                         </div>
 
                         <div className='form-group mb-2'>
-                            <label className='form-label'> Enter Genre of your choice: </label>
+                            <label className='form-label'> Genre of your choice: </label>
                             <input
                                 type='text'
                                 placeholder='Enter Genre'
@@ -198,7 +220,7 @@ const UserComponent = () => {
                         </div>
 
                         <div className='form-group mb-2'>
-                            <label className='form-label'> Enter another Genre of your choice (optional): </label>
+                            <label className='form-label'> Another Genre of your choice (optional): </label>
                             <input
                                 type='text'
                                 placeholder='Enter Another Genre'

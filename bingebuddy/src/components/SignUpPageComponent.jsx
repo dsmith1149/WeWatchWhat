@@ -37,7 +37,7 @@ const SignUpPageComponent = () => {
     <div className='centered-container'>
       <div className="login-container">
       <h1>Registered successfully</h1>
-      <p>Click to enter <a href="/add-user">your details</a></p>
+      <p>To complete signup enter <a href="/add-user">your details</a></p>
       </div>
 
     </div>);
@@ -56,12 +56,6 @@ const SignUpPageComponent = () => {
             </div>
             <div className="input-container">
                 <input type="password" placeholder="Confirm Password" value={password} onChange={(e) => setConfirmPassword(e.target.value)} />
-            </div>
-            <div className="input-container">
-                <input type="text" placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} />
-            </div>
-            <div className="input-container">
-                <input type="date" placeholder="Date of Registration" value={dor} onChange={(e) => setDateOfRegistration(e.target.value)} />
             </div>
             <button className="btn btn-primary mb-2 login-button" onClick={handleRegistration}>SignUp</button>
             <div className="login-link">
