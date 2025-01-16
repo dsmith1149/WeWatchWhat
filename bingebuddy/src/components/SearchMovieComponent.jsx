@@ -1,39 +1,43 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 
 
 export default function SearchMovie() {
-  const results = [];
+  let tMovies = []
+  let sMovies = []
+  let initial = []
+  let link = ""
+  let title = ""
+  let poster = ""
   const [searchTerm, setSearchTerm] = useState("");
+  const[showMovies, setShowMovies] = useState(initial)
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     
   }
-    // const handleSubmit = () => {
-    //   let title = ""
-    //   fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=a6836b7c`).then(function(response){
-    //     response.json().then(function(json){
-    //       console.log(json)
-    //       for (let list in json.Search){
-    //          title = json["Search"][list]["Title"]
-    //          results.push(title)
-    //          console.log(results)
-             
-    //       }
-    //     })
-    //     })
-        
-    //   }
-      
+
+  const displayMovies = function(movie){
+     
+
+     
+    return <ul>{movie[0]}</ul>
+  }
+     
   const handleSubmit = () => {
+    sMovies=[]; //move this somewhere
     const fetchData = async () => {
       const result = await fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=a6836b7c`)
       result.json().then(json => {
-        for(item in json["Search"]){
-          result.push(json["Search"][item]["Title"])
+        for(let item in json["Search"]){
+          title = json["Search"][item]["Title"]
+          poster = json["Search"][item]["Poster"]
+          tMovies = [title, poster]
+          sMovies.push(tMovies)
         }
+        initial = sMovies
+        setShowMovies(initial)
       })
     }
-    fetchData();
+    fetchData()
   }
 
   return(
@@ -43,11 +47,8 @@ export default function SearchMovie() {
           <input type="text" value={searchTerm} onChange={handleSearch}/>
           <input type="submit" onClick={handleSubmit}/>
       </b>
-      <ol>
-
-      </ol>
+      <ul>{showMovies.map(displayMovies)}</ul>
       
-     
     </div>
   )
 }
