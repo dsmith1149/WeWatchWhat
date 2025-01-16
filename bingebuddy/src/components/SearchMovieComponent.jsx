@@ -19,7 +19,7 @@ export default function SearchMovie() {
      
 
      
-    return <ul>{movie[0]}</ul>
+    return <ul>{movie[0]} <img src={movie[1]}></img></ul>
   }
      
   const handleSubmit = () => {
