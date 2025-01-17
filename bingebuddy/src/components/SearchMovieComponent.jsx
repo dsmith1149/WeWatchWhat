@@ -16,8 +16,8 @@ export default function SearchMovie() {
   }
 
   const displayMovies = function(movie){
-    return <ul><ul>{movie[0]}</ul> 
-    <a href={movie[2]}><img src={movie[1]}></img></a></ul>
+    return <ul key={movie}><ul key={movie[0]}>{movie[0]}</ul> 
+    <a key={movie[2]} href={movie[2]}><img key={movie[1]} src={movie[1]}></img></a></ul>
   }
      
   const handleSubmit = () => {
