@@ -91,7 +91,10 @@ const UserComponent = () => {
         if(userName.trim()){
             errorsCopy.userName = '';
         }
-
+        // else{           // userName is optional, if not provided email will be used while posting comments
+        //     errorsCopy.userName = 'UserName is required';
+        //     valid = 'false';
+        // }
 
         if(firstName.trim()){   
             errorsCopy.firstName = '';
@@ -165,7 +168,7 @@ const UserComponent = () => {
                         </div>
 
                         <div>
-                            <label className='form-label'> Username: </label>
+                            <label className='form-label'> Username (optional): </label>
                             <input
                                 type='text'
                                 placeholder='Email will be used in posts if username is not provided'
@@ -243,4 +246,3 @@ const UserComponent = () => {
 }
 
 export default UserComponent
-

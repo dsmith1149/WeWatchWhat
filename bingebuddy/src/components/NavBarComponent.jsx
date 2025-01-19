@@ -11,13 +11,13 @@ const NavBarComponent = () => {
 
     const navigator = useNavigate(); 
 
-
+    // const handleSelect = (eventKey) => alert(`selected ${eventKey}`);
     const handleSelect = (eventKey) =>  navigator(`${eventKey}`);
 
 
       return (
         <>
-
+          {/* <Navbar bg="primary" data-bs-theme="dark"> */}
           <Navbar className='navbar navbar-custom d-flex navbar-brand text-light'>
             <Container>
               <Navbar.Brand className="navbar-brand text-light" href="/">BingeBuddy: An Online Movie Rating Platform</Navbar.Brand>
@@ -29,6 +29,7 @@ const NavBarComponent = () => {
                     <NavDropdown.Item eventKey="/">Home</NavDropdown.Item>
                     <NavDropdown.Item eventKey="/search-movie">Search Movie</NavDropdown.Item>
                     <NavDropdown.Item eventKey="/search-user">Search User</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="/dashboard-main/1">User Dashboard</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Container>

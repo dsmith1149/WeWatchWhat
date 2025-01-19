@@ -13,7 +13,12 @@ const LoginPageComponent = ({ onLogin }) => {
 
   const handleLogin = async () => {
     try {
-
+      // Use encodeURI if you have a whole URL. 
+      // If you only have a portion of a URL, encodeURIComponent is the way to go.
+      // const url = `http://localhost:8080/api/users/get?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
+      // const response = await axios.get(url);
+      // const userData = response.data;
+      // onLogin(userData);
       console.log("Login successful");
 
     } catch (error) {
@@ -57,4 +62,3 @@ const LoginPageComponent = ({ onLogin }) => {
 }
 
 export default LoginPageComponent
-

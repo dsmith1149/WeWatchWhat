@@ -1,5 +1,6 @@
 .footer{
   position:fixed;
+  /* position: absolute; */
   left:0;
   right:0;
   bottom:0;
@@ -7,6 +8,7 @@
   height:50px;
   background-color: darkblue;
   text-align: center;
+  font-size: 15px;
   color:white;
 }
 
@@ -119,3 +121,12 @@
 }
 
 
+.home-image {
+  background-image: url("./Images/Movies_bg.jpg");
+  /* width: 100%; */
+  height: 19em !important;
+}
+
+.sidebar{
+  color: #081A51;
+}

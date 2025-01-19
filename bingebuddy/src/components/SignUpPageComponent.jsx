@@ -23,7 +23,8 @@ const SignUpPageComponent = () => {
         dor
       };
     
-
+    //   const response = await axios.post('http://localhost:8080/api/users/add-user-login', userData);
+    //   console.log('User registered:', response.data);
     console.log('User registered:');
 
     } catch (error) {
@@ -66,6 +67,5 @@ const SignUpPageComponent = () => {
     </div>
   )
 }
-
 
 export default SignUpPageComponent
