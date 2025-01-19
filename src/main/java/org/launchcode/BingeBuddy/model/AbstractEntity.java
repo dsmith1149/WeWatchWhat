@@ -43,7 +43,6 @@ public abstract class AbstractEntity {
     public void setEmail(String email) {
     }
 
-    public void setAnotherGenre(String anotherGenre) {
-    }
+
 }
 

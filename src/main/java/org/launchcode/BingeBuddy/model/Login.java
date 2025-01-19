@@ -6,10 +6,9 @@ import org.launchcode.BingeBuddy.model.AbstractEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-@Entity
-@Table(name = "login")
 
-public class Login extends AbstractEntity {
+
+public class Login extends User {
 
 @Value("email")
     private String email;

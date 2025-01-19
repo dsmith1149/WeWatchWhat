@@ -2,7 +2,6 @@ package org.launchcode.BingeBuddy.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.launchcode.BingeBuddy.model.AbstractEntity;
 
 @Entity
 @Table(name = "users")
@@ -11,7 +10,7 @@ public class User extends AbstractEntity {
     private String firstName;
     private String lastName;
     private String genre;
-    private String genre2;
+    private String anotherGenre;
 
 
 
@@ -40,9 +39,9 @@ public class User extends AbstractEntity {
 
     public void setGenre(String genre) {this.genre = genre;}
 
-    public String getGenre2() {return genre2;}
+    public String getAnotherGenre() {return anotherGenre;}
 
-    public void setGenre2(String genre2) {this.genre2 = genre2;}
+    public void setAnotherGenre(String anotherGenre) {this.anotherGenre = anotherGenre;}
 
 
 }
