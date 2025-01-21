@@ -1,4 +1,6 @@
 import {useState } from "react";
+import AddToListButton from "./AddToListButton";
+
 
 export default function SearchMovie() {
   let tMovies = [];
@@ -16,8 +18,11 @@ export default function SearchMovie() {
   }
 
   const displayMovies = function(movie){
-    return <ul key={movie}><ul key={movie[0]}>{movie[0]}</ul> 
-    <a key={movie[2]} href={movie[2]}><img key={movie[1]} src={movie[1]}></img></a></ul>
+    return <ul key={movie}>
+      <b key={movie[0]}>{movie[0]}</b>
+      <a key={movie[2]} href={`movie=${movie[2]}`}> <img key={movie[1]} src={movie[1]}></img></a>
+      <b key={`button${movie[0]}`}> {AddToListButton(movie[2])}</b>
+    </ul>
   }
      
   const handleSubmit = () => {
@@ -46,7 +51,8 @@ export default function SearchMovie() {
           <input type="text" value={searchTerm} onChange={handleSearch}/>
           <input type="submit" onClick={handleSubmit}/>
       </b>
-      <ul>{showMovies.map(displayMovies)}</ul>
+      <ul>{showMovies.map((x) => displayMovies(x))}</ul>
+      
     </div>
   )
 }

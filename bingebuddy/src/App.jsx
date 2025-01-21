@@ -1,6 +1,5 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
 import ListUserComponent from './components/ListUserComponent'
 import UserComponent from './components/UserComponent'
 import FooterComponent from './components/FooterComponent'
@@ -9,6 +8,7 @@ import NavBarComponent from './components/NavBarComponent'
 import LoginPageComponent from './components/LoginPageComponent'
 import SearchMovieComponent from './components/SearchMovieComponent'
 import SearchUserComponent from './components/SearchUserComponent'
+
 
 
 function App() {
