@@ -21,17 +21,17 @@ public class Movie extends AbstractEntity {
     @JsonProperty("Type")
     private String type;
 
-    @JsonProperty("imdbId")
-    private String imdbId;
+//    @JsonProperty("imdbId")
+//    private String imdbId;
 
     @Column(nullable = true)
     @JsonProperty("Year")
     private String year;
 
-    @Column(nullable = true)
-    @Size(min = 3, max = 500, message = "Location must be between 3 and 150 characters")
-    @JsonProperty("Description")
-    private String description;
+//    @Column(nullable = true)
+//    @Size(min = 3, max = 500, message = "Location must be between 3 and 150 characters")
+//    @JsonProperty("Description")
+//    private String description;
 
     @Column(nullable = true)
     @JsonProperty("Poster")
@@ -44,13 +44,13 @@ public class Movie extends AbstractEntity {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>(); // Association with reviews
 
-    public String getImdbId() {
-        return imdbId;
-    }
-
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
-    }
+//    public String getImdbId() {
+//        return imdbId;
+//    }
+//
+//    public void setImdbId(String imdbId) {
+//        this.imdbId = imdbId;
+//    }
 
     public Movie() {
 
@@ -60,9 +60,9 @@ public class Movie extends AbstractEntity {
         this.title = title;
         this.rating = rating;
         this.type = type;
-        this.imdbId = imdbId;
+//        this.imdbId = imdbId;
         this.year = releaseDate;
-        this.description = description;
+//        this.description = description;
         this.poster = posterUrl;
         this.apiId = apiId;
 
@@ -102,13 +102,13 @@ public class Movie extends AbstractEntity {
         this.year = releaseYear;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 
     public String getPoster() {
         return poster;
@@ -134,13 +134,5 @@ public class Movie extends AbstractEntity {
         this.reviews = review;
     }
 
-    public void addReview(Review newReview) {
-        this.reviews.add(newReview);
-        newReview.setMovie(this); // Establish bidirectional relationship
-    }
 
-    public void removeReview(Review reviewToRemove) {
-        this.reviews.remove(reviewToRemove);
-        reviewToRemove.setMovie(null); // Remove association
-    }
 }

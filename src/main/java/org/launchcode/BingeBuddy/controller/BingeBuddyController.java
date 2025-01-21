@@ -1,10 +1,8 @@
 package org.launchcode.BingeBuddy.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.launchcode.BingeBuddy.config.APIConfiguration;
-import org.launchcode.BingeBuddy.data.MovieRepository;
-import org.launchcode.BingeBuddy.data.UserRepository;
-import org.launchcode.BingeBuddy.data.WatchlistRepository;
+import org.launchcode.BingeBuddy.data.*;
 import org.launchcode.BingeBuddy.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,12 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
 public class BingeBuddyController {
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -115,14 +120,14 @@ public class BingeBuddyController {
 
 
     // Endpoint: View all watchlist items
-    @GetMapping("/watchlist")
+    @GetMapping("/watchlist/{watchlistId}")
     public ResponseEntity<List<Watchlist>> getWatchlist() {
         List<Watchlist> watchlist = watchlistRepository.findAll();
         return ResponseEntity.ok(watchlist);
     }
 
     // Endpoint: Remove a movie from the watchlist
-    @DeleteMapping("/watchlist")
+    @DeleteMapping("/watchlist/{watchlistId}")
     public ResponseEntity<String> removeFromWatchlist(@RequestParam Integer watchlistId) {
         Optional<Watchlist> watchlistEntry = watchlistRepository.findById(watchlistId);
         if (watchlistEntry.isPresent()) {
@@ -133,59 +138,122 @@ public class BingeBuddyController {
         }
     }
 
-    @PostMapping("/watchlist/event")
-    public ResponseEntity<String> createEvent(
-            @RequestParam Integer userId,
-            @RequestParam String imdbId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduledDate) {
 
-        Optional<Movie> movie = movieRepository.findByApiId(imdbId);
+    @PostMapping("/review")
+    public ResponseEntity<String> createReview(@RequestParam Integer movieId, @RequestBody Review review) {
+        Optional<Movie> movie = movieRepository.findById(movieId);
         if (movie.isEmpty()) {
             return ResponseEntity.badRequest().body("Movie not found.");
         }
 
-        Watchlist watchlistEntry = new Watchlist();
-        watchlistEntry.setMovie(movie.get());
-        watchlistEntry.setUser(new User(userId));
-        watchlistEntry.setStatus(WatchlistStatus.PLANNED);
-        watchlistEntry.setScheduledDate(scheduledDate);
+        review.setMovie(movie.get());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
+        reviewRepository.save(review);
 
-        watchlistRepository.save(watchlistEntry);
-        return ResponseEntity.ok("Event created for movie: " + movie.get().getTitle());
+        return ResponseEntity.ok("Review created successfully.");
     }
 
-    @PutMapping("/calendar/event")
-    public ResponseEntity<String> updateEvent(
-            @RequestParam Integer watchlistId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate newDate) {
+    // Read all reviews for a movie
+    @GetMapping("/review")
+    public ResponseEntity<List<Review>> getReviews(@RequestParam Integer movieId) {
+        List<Review> reviews = reviewRepository.findByMovieId(movieId);
+        return ResponseEntity.ok(reviews);
+    }
 
-        Optional<Watchlist> watchlistEntry = watchlistRepository.findById(watchlistId);
-        if (watchlistEntry.isEmpty()) {
-            return ResponseEntity.badRequest().body("Event not found.");
+    // Read a single review by ID
+    @GetMapping("review/{reviewId}")
+    public ResponseEntity<Review> getReviewById(@PathVariable Integer reviewId) {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        return review.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Update a review
+    @PutMapping("review/{reviewId}")
+    public ResponseEntity<String> updateReview(@PathVariable Integer reviewId, @RequestBody Review updatedReview) {
+        Optional<Review> existingReview = reviewRepository.findById(reviewId);
+        if (existingReview.isEmpty()) {
+            return ResponseEntity.badRequest().body("Review not found.");
         }
 
-        Watchlist entry = watchlistEntry.get();
-        entry.setScheduledDate(newDate);
-        watchlistRepository.save(entry);
-        return ResponseEntity.ok("Event updated to new date: " + newDate);
+        Review review = existingReview.get();
+        review.setContent(updatedReview.getContent());
+        review.setRating(updatedReview.getRating());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        reviewRepository.save(review);
+        return ResponseEntity.ok("Review updated successfully.");
     }
 
-    @DeleteMapping("/calendar/event")
-    public ResponseEntity<String> deleteEvent(@RequestParam Integer watchlistId) {
-        Optional<Watchlist> watchlistEntry = watchlistRepository.findById(watchlistId);
-        if (watchlistEntry.isPresent()) {
-            watchlistRepository.delete(watchlistEntry.get());
-            return ResponseEntity.ok("Event deleted.");
-        } else {
-            return ResponseEntity.badRequest().body("Event not found.");
+    // Delete a review
+    @DeleteMapping("review/{reviewId}")
+    public ResponseEntity<String> deleteReview(@PathVariable Integer reviewId) {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        if (review.isEmpty()) {
+            return ResponseEntity.badRequest().body("Review not found.");
         }
+
+        reviewRepository.delete(review.get());
+        return ResponseEntity.ok("Review deleted successfully.");
     }
 
-    @GetMapping("/calendar/event")
-    public ResponseEntity<Watchlist> getEvent(@RequestParam Integer watchlistId) {
-        Optional<Watchlist> watchlistEntry = watchlistRepository.findById(watchlistId);
-        return watchlistEntry.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().body(null));
+    @PostMapping("/comments")
+    public ResponseEntity<String> createComment(@RequestParam Integer reviewId, @RequestBody Comment comment) {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        if (review.isEmpty()) {
+            return ResponseEntity.badRequest().body("Review not found.");
+        }
+
+        comment.setReview(review.get());
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
+        commentRepository.save(comment);
+
+        return ResponseEntity.ok("Comment added successfully.");
+    }
+
+    // Get all comments for a specific review
+    @GetMapping("/comments")
+    public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
+        List<Comment> comments = commentRepository.findByReview_Id(reviewId);
+        return ResponseEntity.ok(comments);
+    }
+
+    // Get a single comment by ID
+    @GetMapping("comments/{commentId}")
+    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        return comment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Update a comment
+    @PutMapping("comments/{commentId}")
+    public ResponseEntity<String> updateComment(@PathVariable Integer commentId, @RequestBody Comment updatedComment) {
+        Optional<Comment> existingComment = commentRepository.findById(commentId);
+        if (existingComment.isEmpty()) {
+            return ResponseEntity.badRequest().body("Comment not found.");
+        }
+
+        Comment comment = existingComment.get();
+        comment.setContent(updatedComment.getContent());
+        comment.setUpdatedAt(LocalDateTime.now());
+        commentRepository.save(comment);
+
+        return ResponseEntity.ok("Comment updated successfully.");
+    }
+
+    // Delete a comment
+    @DeleteMapping("comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Integer commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isEmpty()) {
+            return ResponseEntity.badRequest().body("Comment not found.");
+        }
+
+        commentRepository.delete(comment.get());
+        return ResponseEntity.ok("Comment deleted successfully.");
     }
 
 }
