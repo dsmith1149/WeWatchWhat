@@ -1,7 +1,4 @@
 
-
-import React from 'react'
-
 const HomePageComponent = () => {
   return (
     <div className='d-none d-lg-block'>
