@@ -4,16 +4,22 @@ import { useNavigate, useParams} from 'react-router-dom'
 
 const UserComponent = () => {
 
+    const[email, setEmail] = useState('')
+    const[userName, setUserName] = useState('')
     const[firstName, setFirstName] = useState('')
     const[lastName, setLastName] = useState('')
-    const[email, setEmail] = useState('')
+    const[genre1, setGenre1] = useState('')
+    const[genre2, setGenre2] = useState('')
 
     const {id} = useParams();
    
     const [errors, setErrors] = useState({
+        email:'',
+        userName:'',
         firstName:'',
         lastName:'',
-        email:''
+        genre1:'',
+        genre2:''
     })
 
     const navigator = useNavigate(); 
@@ -22,9 +28,12 @@ const UserComponent = () => {
         {
             if(id){
                 getUser(id).then((response) => {
+                    setEmail(response.data.email);
+                    setUserName(response.data.userName);
                     setFirstName(response.data.firstName);
                     setLastName(response.data.lastName);
-                    setEmail(response.data.email);
+                    setGenre1(response.data.genre1);
+                    setGenre2(response.data.genre2);
                 }).catch(error => {
                     console.error(error);
                 })
@@ -43,7 +52,7 @@ const UserComponent = () => {
 
         if(validateForm()){       
             
-            const user = {firstName, lastName, email}
+            const user = {email, userName, firstName, lastName, genre1, genre2}
             console.log(user); 
 
             if(id){
@@ -70,7 +79,23 @@ const UserComponent = () => {
         let valid = true;
 
         const errorsCopy = {... errors}  
+
+        if(email.trim()){
+            errorsCopy.email = '';
+        }
+        else{
+            errorsCopy.email = 'Email is required';
+            valid = 'false';
+        }
         
+        if(userName.trim()){
+            errorsCopy.userName = '';
+        }
+        // else{           // userName is optional, if not provided email will be used while posting comments
+        //     errorsCopy.userName = 'UserName is required';
+        //     valid = 'false';
+        // }
+
         if(firstName.trim()){   
             errorsCopy.firstName = '';
         }
@@ -87,13 +112,21 @@ const UserComponent = () => {
             valid = 'false';
         }
 
-        if(email.trim()){
-            errorsCopy.email = '';
+        if(genre1.trim()){
+            errorsCopy.genre1 = '';
         }
         else{
-            errorsCopy.email = 'Email is required';
+            errorsCopy.genre1 = 'Please pick a genre!';
             valid = 'false';
         }
+
+        if(genre2.trim()){
+            errorsCopy.genre2 = '';
+        }
+        // else{                    // Genre2 optional
+        //     errorsCopy.genre2 = 'Please add another genre!';
+        //     valid = 'false';
+        // }
 
         setErrors(errorsCopy);  
         return valid;
@@ -119,6 +152,35 @@ const UserComponent = () => {
             }
                 <div className='card-body'>
                     <form>
+                    <div className='form-group mb-2'>
+                        {/* Generated automatically, user doesn't have to type in */}
+                            <label className='form-label'> Email: </label>
+                            <input
+                                type='text'
+                                placeholder='Enter Email'
+                                name='email'
+                                value={email}
+                                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                onChange={handleEmail}
+                            >
+                            </input>
+                            {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
+                        </div>
+
+                        <div>
+                            <label className='form-label'> Username (optional): </label>
+                            <input
+                                type='text'
+                                placeholder='Email will be used in posts if username is not provided'
+                                name='userName'
+                                value={userName}
+                                className={`form-control ${errors.userName ? 'is-invalid' : ''}`}
+                                onChange={(e) => setUserName(e.target.value)}
+                            >
+                            </input>
+                            {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
+                        </div>
+
                         <div className='form-group mb-2'>
                             <label className='form-label'> First Name: </label>
                             <input
@@ -147,17 +209,31 @@ const UserComponent = () => {
                         </div>
 
                         <div className='form-group mb-2'>
-                            <label className='form-label'> Email: </label>
+                            <label className='form-label'> Genre of your choice: </label>
                             <input
                                 type='text'
-                                placeholder='Enter Email'
-                                name='email'
-                                value={email}
-                                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                                onChange={handleEmail}
+                                placeholder='Enter Genre'
+                                name='genre1'
+                                value={genre1}
+                                className={`form-control ${errors.genre1 ? 'is-invalid' : ''}`}
+                                onChange={(e) => setGenre1(e.target.value)}
                             >
                             </input>
-                            {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
+                            {errors.genre1 && <div className='invalid-feedback'> {errors.genre1} </div>}
+                        </div>
+
+                        <div className='form-group mb-2'>
+                            <label className='form-label'> Another Genre of your choice (optional): </label>
+                            <input
+                                type='text'
+                                placeholder='Enter Another Genre'
+                                name='genre2'
+                                value={genre2}
+                                className={`form-control ${errors.genre2 ? 'is-invalid' : ''}`}
+                                onChange={(e) => setGenre2(e.target.value)}
+                            >
+                            </input>
+                            {errors.genre1 && <div className='invalid-feedback'> {errors.genre1} </div>}
                         </div>
 
                         <button className='btn btn-success' onClick={saveOrUpdateUser}>Submit</button>

@@ -51,7 +51,7 @@ const ListUserComponent = () => {
                             <td>{user.id}</td>
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
-                            <td>{user.emailmail}</td>
+                            <td>{user.email}</td>
                             <td>
                                 <button className='btn btn-info' onClick={() => updateUser(user.id)}> Update</button>
                             </td>

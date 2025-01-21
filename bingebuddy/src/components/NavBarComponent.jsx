@@ -23,10 +23,12 @@ const NavBarComponent = () => {
               <Nav className="justify-content-end" onSelect={handleSelect}>
                 <NavDropdown title="Menu" id="nav-dropdown">
                     <NavDropdown.Item eventKey="/login">Login</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="/signup">SignUp</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item eventKey="/">Home</NavDropdown.Item>
                     <NavDropdown.Item eventKey="/search-movie">Search Movie</NavDropdown.Item>
                     <NavDropdown.Item eventKey="/search-user">Search User</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="/dashboard-main/1">User Dashboard</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Container>

@@ -46,6 +46,7 @@ export default function SearchMovie() {
 
   return(
     <div>
+
       <h1>Enter the name of a movie!</h1>
       <b>
           <input type="text" value={searchTerm} onChange={handleSearch}/>
@@ -53,6 +54,8 @@ export default function SearchMovie() {
       </b>
       <ul>{showMovies.map((x) => displayMovies(x))}</ul>
       
+
+
     </div>
   )
 }
