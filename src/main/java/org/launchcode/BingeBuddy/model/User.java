@@ -11,17 +11,41 @@ public class User extends AbstractEntity {
     private String lastName;
     private String genre;
     private String anotherGenre;
+    private String email;
+    private String password;
 
+    public String getEmail() {
+        return email;
+    }
 
+    @Override
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public User(Integer id, String username) {
-        this();
-        this.username = username;
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public User() {
     }
+
+    public User(String username, String firstName, String lastName, String genre, String anotherGenre) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.genre = genre;
+        this.anotherGenre = anotherGenre;
+    }
+
+    public User(Integer userId) {
+        super();
+    }
+
 
     public String getUsername() {return username;}
 

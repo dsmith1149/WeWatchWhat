@@ -21,7 +21,7 @@ public class Movie extends AbstractEntity {
     @JsonProperty("Type")
     private String type;
 
-    @JsonProperty("imdbID")
+    @JsonProperty("imdbId")
     private String imdbId;
 
     @Column(nullable = true)
