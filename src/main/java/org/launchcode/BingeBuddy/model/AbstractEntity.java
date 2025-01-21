@@ -39,7 +39,6 @@ public abstract class AbstractEntity {
     }
 
 
-
     public void setEmail(String email) {
     }
 

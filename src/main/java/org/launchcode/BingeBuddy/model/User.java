@@ -47,25 +47,45 @@ public class User extends AbstractEntity {
     }
 
 
-    public String getUsername() {return username;}
+    public String getUsername() {
+        return username;
+    }
 
-    public void setUsername(String username) {this.username = username;}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public String getFirstName() {return firstName;}
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public void setFirstName(String firstName) {this.firstName = firstName;}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public String getLastName() {return lastName;}
+    public String getLastName() {
+        return lastName;
+    }
 
-    public void setLastName(String lastName) {this.lastName = lastName;}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public String getGenre() {return genre;}
+    public String getGenre() {
+        return genre;
+    }
 
-    public void setGenre(String genre) {this.genre = genre;}
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 
-    public String getAnotherGenre() {return anotherGenre;}
+    public String getAnotherGenre() {
+        return anotherGenre;
+    }
 
-    public void setAnotherGenre(String anotherGenre) {this.anotherGenre = anotherGenre;}
+    public void setAnotherGenre(String anotherGenre) {
+        this.anotherGenre = anotherGenre;
+    }
 
 
 }

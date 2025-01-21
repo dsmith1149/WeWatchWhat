@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface WatchlistRepository extends JpaRepository<Watchlist, Integer> {
     List<Watchlist> findAllByUserId(Integer userId);
+
+    List<Watchlist> findByUser_Id(Integer userId);
 }

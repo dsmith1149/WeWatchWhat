@@ -39,7 +39,27 @@ public class BingeBuddyController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // Endpoint: Search for movies
+    @GetMapping
+    public String homePage(){
+        return "BingeBuddy";
+    }
+
+    @GetMapping("/dashboard/{userId}")
+    public ResponseEntity<UserDashboard> getDashboard(@PathVariable Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()) {
+            UserDashboard dashboard = new UserDashboard();
+            dashboard.setUser(user.get());
+            dashboard.setWatchlist(watchlistRepository.findByUser_Id(userId)); // Example of user-specific data
+            dashboard.setReviews(reviewRepository.findByUser_Id(userId));
+            return ResponseEntity.ok(dashboard);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+
     @GetMapping("/search")
     public ResponseEntity<List<Movie>> searchMovies(@RequestParam String query) {
         String apiUrl = String.format("%s?s=%s&apikey=%s", apiConfig.getApiUrl(), query, apiConfig.getApiKey());
@@ -52,19 +72,19 @@ public class BingeBuddyController {
         }
     }
 
-    // Endpoint: Get movie details by IMDb ID
+
     @GetMapping("/movie")
-    public ResponseEntity<Movie> getMovieDetails(@RequestParam String imdbId) {
-        Optional<Movie> existingMovie = movieRepository.findByApiId(imdbId);
+    public ResponseEntity<Movie> getMovieDetails(@RequestParam String apiId) {
+        Optional<Movie> existingMovie = movieRepository.findByApiId(apiId);
         if (existingMovie.isPresent()) {
             return ResponseEntity.ok(existingMovie.get());
         }
 
-        String apiUrl = String.format("%s?i=%s&apikey=%s", apiConfig.getApiUrl(), imdbId, apiConfig.getApiKey());
+        String apiUrl = String.format("%s?i=%s&apikey=%s", apiConfig.getApiUrl(), apiId, apiConfig.getApiKey());
         Movie movie = restTemplate.getForObject(apiUrl, Movie.class);
 
         if (movie != null) {
-            movie.setApiId(imdbId);
+            movie.setApiId(apiId);
             movieRepository.save(movie);
             return ResponseEntity.ok(movie);
         } else {
@@ -72,7 +92,7 @@ public class BingeBuddyController {
         }
     }
 
-    // Endpoint: Add or update a movie in the watchlist
+
     @PostMapping("/watchlist")
     public ResponseEntity<String> addToWatchlist(
             @RequestParam String apiId,
@@ -80,10 +100,10 @@ public class BingeBuddyController {
             @RequestParam WatchlistStatus status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduledDate) {
 
-        // Fetch movie by apiId
+
         Optional<Movie> movie = movieRepository.findByApiId(apiId);
         if (movie.isEmpty()) {
-            // Fetch movie from external API
+
             String apiUrl = String.format("%s?i=%s&apikey=%s", apiConfig.getApiUrl(), apiId, apiConfig.getApiKey());
             Movie fetchedMovie = restTemplate.getForObject(apiUrl, Movie.class);
 
@@ -97,13 +117,12 @@ public class BingeBuddyController {
         }
 
 
-        // Fetch user by userId
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found. Please provide a valid user ID.");
         }
 
-        // Create and save the watchlist entry
+
         Watchlist watchlistEntry = new Watchlist();
         watchlistEntry.setMovie(movie.get());
         watchlistEntry.setUser(user.get());
@@ -112,21 +131,19 @@ public class BingeBuddyController {
 
         watchlistRepository.save(watchlistEntry);
 
-        // Return success response
+
         return ResponseEntity.ok("Movie added to watchlist with status: " + status +
                 (scheduledDate != null ? " and scheduled for: " + scheduledDate : ""));
     }
 
 
-
-    // Endpoint: View all watchlist items
     @GetMapping("/watchlist/{watchlistId}")
     public ResponseEntity<List<Watchlist>> getWatchlist() {
         List<Watchlist> watchlist = watchlistRepository.findAll();
         return ResponseEntity.ok(watchlist);
     }
 
-    // Endpoint: Remove a movie from the watchlist
+
     @DeleteMapping("/watchlist/{watchlistId}")
     public ResponseEntity<String> removeFromWatchlist(@RequestParam Integer watchlistId) {
         Optional<Watchlist> watchlistEntry = watchlistRepository.findById(watchlistId);
@@ -154,14 +171,14 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Review created successfully.");
     }
 
-    // Read all reviews for a movie
+
     @GetMapping("/review")
     public ResponseEntity<List<Review>> getReviews(@RequestParam Integer movieId) {
         List<Review> reviews = reviewRepository.findByMovieId(movieId);
         return ResponseEntity.ok(reviews);
     }
 
-    // Read a single review by ID
+
     @GetMapping("review/{reviewId}")
     public ResponseEntity<Review> getReviewById(@PathVariable Integer reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
@@ -169,7 +186,7 @@ public class BingeBuddyController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update a review
+
     @PutMapping("review/{reviewId}")
     public ResponseEntity<String> updateReview(@PathVariable Integer reviewId, @RequestBody Review updatedReview) {
         Optional<Review> existingReview = reviewRepository.findById(reviewId);
@@ -186,7 +203,7 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Review updated successfully.");
     }
 
-    // Delete a review
+
     @DeleteMapping("review/{reviewId}")
     public ResponseEntity<String> deleteReview(@PathVariable Integer reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
@@ -213,14 +230,14 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Comment added successfully.");
     }
 
-    // Get all comments for a specific review
+
     @GetMapping("/comments")
     public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
         List<Comment> comments = commentRepository.findByReview_Id(reviewId);
         return ResponseEntity.ok(comments);
     }
 
-    // Get a single comment by ID
+
     @GetMapping("comments/{commentId}")
     public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
         Optional<Comment> comment = commentRepository.findById(commentId);
@@ -228,7 +245,7 @@ public class BingeBuddyController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update a comment
+
     @PutMapping("comments/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable Integer commentId, @RequestBody Comment updatedComment) {
         Optional<Comment> existingComment = commentRepository.findById(commentId);
@@ -244,7 +261,7 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Comment updated successfully.");
     }
 
-    // Delete a comment
+
     @DeleteMapping("comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Integer commentId) {
         Optional<Comment> comment = commentRepository.findById(commentId);

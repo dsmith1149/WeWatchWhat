@@ -1,8 +1,11 @@
 package org.launchcode.BingeBuddy.controller;
 
+
 import org.launchcode.BingeBuddy.data.UserRepository;
+import org.launchcode.BingeBuddy.model.LoginRequest;
 import org.launchcode.BingeBuddy.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +67,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -100,7 +102,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("update/{userId}")
     public ResponseEntity<User> updateUserDetails(@PathVariable Integer userId,
                                                   @RequestParam(required = false) String email,
                                                   @RequestParam(required = false) String username,
@@ -124,5 +126,39 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<User> deleteUserById(@PathVariable Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+            return ResponseEntity.ok(user.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<User> searchUserByEmailOrUsername(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username) {
+        Optional<User> user;
+
+        if (email != null) {
+            user = userRepository.findByEmail(email);
+        } else if (username != null) {
+            user = userRepository.findByUsername(username);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
+
+
+
 }
 

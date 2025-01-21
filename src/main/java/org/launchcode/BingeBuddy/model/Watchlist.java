@@ -26,8 +26,6 @@ public class Watchlist extends AbstractEntity {
     private LocalDate scheduledDate;
 
 
-
-
     public Watchlist() {
     }
 
@@ -61,6 +59,7 @@ public class Watchlist extends AbstractEntity {
     public void setStatus(WatchlistStatus status) {
         this.status = status;
     }
+
     public LocalDate getScheduledDate() {
         return scheduledDate;
     }
