@@ -13,7 +13,7 @@ const DashboardMainComponent = () => {
       { title: "Watchlists ", src: "Calendar", path:"/user-watchlists/1"},
       { title: "Trends", src: "Chart", path:"/user-trends/1" },
       { title: "Search Users", src: "Search", path:"/search-user", gap: true },
-      //{ title: "Settings", src: "Setting", path:"/settings/1" },
+      //{ title: "Settings", src: "Setting", path:"/user-settings/1" },
     ];
 
 

@@ -8,23 +8,29 @@ const SignUpPageComponent = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [userName, setUserName] = useState('');
-    const [dor, setDateOfRegistration] = useState('');
+    // const [userName, setUserName] = useState('');
+    // const [dor, setDateOfRegistration] = useState('');
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
     
   const handleRegistration = async () => {
     try {
+      
       const userData = {
         email,
         password,
         confirmPassword,
-        userName,
-        dor
+        // userName,
+        // dor
       };
+      console.log(userData);
     
-    //   const response = await axios.post('http://localhost:8080/api/users/add-user-login', userData);
-    //   console.log('User registered:', response.data);
+
+      // Testing this part out...
+      // const response = await axios.post('http://localhost:8080/api/users/add-user-login', userData);
+
+    const response = await axios.post('http://localhost:8080/register', userData);
+    console.log('User registered:', response.data);
     console.log('User registered:');
 
     } catch (error) {
@@ -56,8 +62,14 @@ const SignUpPageComponent = () => {
                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className="input-container">
-                <input type="password" placeholder="Confirm Password" value={password} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
             </div>
+            {/* <div className="input-container">
+                <input type="text" placeholder="User Name" value={userName} onChange={(e) => setUserName(e.target.value)} />
+            </div> */}
+            {/* <div className="input-container">
+                <input type="date" placeholder="Current Date" value={dor} onChange={(e) => setDateOfRegistration(e.target.value)} />
+            </div> */}
             <button className="btn btn-primary mb-2 login-button" onClick={handleRegistration}>SignUp</button>
             <div className="login-link">
                 <p className='registration-link'>Already have an account? <a href="/login">Login here</a></p>
