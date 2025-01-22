@@ -5,7 +5,7 @@ import { useNavigate, useParams} from 'react-router-dom'
 const UserComponent = () => {
 
     const[email, setEmail] = useState('')
-    const[userName, setUserName] = useState('')
+    // const[userName, setUserName] = useState('')
     const[firstName, setFirstName] = useState('')
     const[lastName, setLastName] = useState('')
     const[genre1, setGenre1] = useState('')
@@ -15,7 +15,7 @@ const UserComponent = () => {
    
     const [errors, setErrors] = useState({
         email:'',
-        userName:'',
+        // userName:'',
         firstName:'',
         lastName:'',
         genre1:'',
@@ -29,7 +29,7 @@ const UserComponent = () => {
             if(id){
                 getUser(id).then((response) => {
                     setEmail(response.data.email);
-                    setUserName(response.data.userName);
+                    // setUserName(response.data.userName);
                     setFirstName(response.data.firstName);
                     setLastName(response.data.lastName);
                     setGenre1(response.data.genre1);
@@ -52,7 +52,8 @@ const UserComponent = () => {
 
         if(validateForm()){       
             
-            const user = {email, userName, firstName, lastName, genre1, genre2}
+            // const user = {email, userName, firstName, lastName, genre1, genre2}
+            const user = {email, firstName, lastName, genre1, genre2}
             console.log(user); 
 
             if(id){
@@ -83,14 +84,14 @@ const UserComponent = () => {
         if(email.trim()){
             errorsCopy.email = '';
         }
-        else{
-            errorsCopy.email = 'Email is required';
-            valid = 'false';
-        }
+        // else{
+        //     errorsCopy.email = 'Email is required';
+        //     valid = 'false';
+        // }
         
-        if(userName.trim()){
-            errorsCopy.userName = '';
-        }
+        // if(userName.trim()){
+        //     errorsCopy.userName = '';
+        // }
         // else{           // userName is optional, if not provided email will be used while posting comments
         //     errorsCopy.userName = 'UserName is required';
         //     valid = 'false';
@@ -162,12 +163,14 @@ const UserComponent = () => {
                                 value={email}
                                 className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                                 onChange={handleEmail}
+                                disabled
+                                // readOnly
                             >
                             </input>
                             {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className='form-label'> Username (optional): </label>
                             <input
                                 type='text'
@@ -179,7 +182,7 @@ const UserComponent = () => {
                             >
                             </input>
                             {errors.email && <div className='invalid-feedback'> {errors.email} </div>}
-                        </div>
+                        </div> */}
 
                         <div className='form-group mb-2'>
                             <label className='form-label'> First Name: </label>

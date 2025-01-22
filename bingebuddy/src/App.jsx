@@ -18,6 +18,7 @@ import DashboardWatchlistsComponent from './components/DashboardWatchlistsCompon
 import CommentsComponent from './components/CommentsComponent'
 import ReviewsRatingsComponent from './components/ReviewsRatingsComponent'
 import DashboardCommentsComponent from './components/DashboardCommentsComponent'
+import SingleMovieComponent from './components/SingleMovieComponent'
 
 
 
@@ -46,9 +47,10 @@ function App() {
           <Route path='/user-profile/1' element= {<DashboardProfileComponent />}></Route>
           <Route path='/user-reviews/1' element= {<DashboardReviewComponent />}></Route>
           <Route path='/user-comments/1' element= {<DashboardCommentsComponent />}></Route>
-          <Route path='/settings/1' element= {<DashboardSettingsComponent />}></Route>
+          <Route path='/user-settings/1' element= {<DashboardSettingsComponent />}></Route>
           <Route path='/user-trends/1' element= {<DashboardTrendsComponent />}></Route>
           <Route path='/user-watchlists/1' element= {<DashboardWatchlistsComponent />}></Route>
+          <Route path='single-movie/1' element={<SingleMovieComponent />}></Route>
         </Routes>
         <FooterComponent />
       </BrowserRouter>
