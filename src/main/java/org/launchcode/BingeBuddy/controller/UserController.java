@@ -1,11 +1,16 @@
 package org.launchcode.BingeBuddy.controller;
 
+
 import org.launchcode.BingeBuddy.data.UserRepository;
+import org.launchcode.BingeBuddy.model.LoginRequest;
 import org.launchcode.BingeBuddy.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -16,20 +21,51 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestParam String email,
-                                             @RequestParam String username,
-                                             @RequestParam(required = false) String firstName,
-                                             @RequestParam(required = false) String lastName) {
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestParam String email,
+                                                            @RequestParam(required = false) String username,
+                                                            @RequestParam(required = false) String firstName,
+                                                            @RequestParam(required = false) String lastName) {
+        // Create a new user entity
         User newUser = new User();
         newUser.setEmail(email);
-        newUser.setUsername(username);
+        newUser.setUsername(username != null ? username : email); // Default username to email if not provided
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
 
-        userRepository.save(newUser);
-        return ResponseEntity.ok(newUser);
+
+        User savedUser = userRepository.save(newUser);
+
+        // Return user ID and success message
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "User registered successfully.");
+        response.put("userId", savedUser.getId());
+
+        return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/userdetails")
+    public ResponseEntity<String> addUserDetails(@RequestParam Integer userId,
+                                                 @RequestParam(required = false) String genre,
+                                                 @RequestParam(required = false) String anotherGenre) {
+        // Fetch the user by ID
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found.");
+        }
+
+        // Update user details
+        User user = userOptional.get();
+        if (genre != null) user.setGenre(genre);
+        if (anotherGenre != null) user.setAnotherGenre(anotherGenre);
+
+        // Save the updated user
+        userRepository.save(user);
+
+        return ResponseEntity.ok("User details updated successfully.");
+    }
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
@@ -66,7 +102,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("update/{userId}")
     public ResponseEntity<User> updateUserDetails(@PathVariable Integer userId,
                                                   @RequestParam(required = false) String email,
                                                   @RequestParam(required = false) String username,
@@ -90,5 +126,39 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<User> deleteUserById(@PathVariable Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+            return ResponseEntity.ok(user.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<User> searchUserByEmailOrUsername(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username) {
+        Optional<User> user;
+
+        if (email != null) {
+            user = userRepository.findByEmail(email);
+        } else if (username != null) {
+            user = userRepository.findByUsername(username);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
+
+
+
 }
 

@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-
+    List<Comment> findByReview_Id(Integer reviewId);
 }

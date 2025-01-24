@@ -9,6 +9,19 @@ import java.util.List;
 @Entity
 public class Review extends AbstractEntity {
 
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Column(nullable = false)
     private String content;
 
@@ -17,6 +30,9 @@ public class Review extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
+
+@Column
+    private String apiId;
 
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -62,6 +78,14 @@ public class Review extends AbstractEntity {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 }
 
