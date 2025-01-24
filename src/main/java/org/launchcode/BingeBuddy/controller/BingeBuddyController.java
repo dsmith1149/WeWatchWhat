@@ -51,7 +51,7 @@ public class BingeBuddyController {
         if (user.isPresent()) {
             UserDashboard dashboard = new UserDashboard();
             dashboard.setUser(user.get());
-            dashboard.setWatchlist(watchlistRepository.findByUser_Id(userId)); // Example of user-specific data
+            dashboard.setWatchlist(watchlistRepository.findByUser_Id(userId));
             dashboard.setReviews(reviewRepository.findByUser_Id(userId));
             return ResponseEntity.ok(dashboard);
         }
@@ -156,20 +156,33 @@ public class BingeBuddyController {
     }
 
 
-    @PostMapping("/review")
-    public ResponseEntity<String> createReview(@RequestParam Integer movieId, @RequestBody Review review) {
+    @PostMapping("/review/{movieId}")
+    public ResponseEntity<String> createReview(
+            @PathVariable Integer movieId,
+            @RequestParam Integer userId,
+            @RequestBody Review review) {
+
         Optional<Movie> movie = movieRepository.findById(movieId);
         if (movie.isEmpty()) {
             return ResponseEntity.badRequest().body("Movie not found.");
         }
 
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found.");
+        }
+
         review.setMovie(movie.get());
+        review.setUser(user.get());
+
         review.setCreatedAt(LocalDateTime.now());
         review.setUpdatedAt(LocalDateTime.now());
+
         reviewRepository.save(review);
 
         return ResponseEntity.ok("Review created successfully.");
     }
+
 
 
     @GetMapping("/review")

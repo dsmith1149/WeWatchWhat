@@ -11,7 +11,7 @@ public class Review extends AbstractEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public User getUser() {
@@ -31,7 +31,7 @@ public class Review extends AbstractEntity {
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-@Column(insertable=false, updatable=false)
+@Column
     private String apiId;
 
 
