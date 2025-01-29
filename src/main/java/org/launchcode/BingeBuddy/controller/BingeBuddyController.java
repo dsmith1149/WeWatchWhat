@@ -44,6 +44,9 @@ public class BingeBuddyController {
         return "BingeBuddy";
     }
 
+
+    // Works!! (Doesn't return comments)
+    // http://localhost:8080/dashboard/3
     @GetMapping("/dashboard/{userId}")
     public ResponseEntity<UserDashboard> getDashboard(@PathVariable Integer userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -55,11 +58,11 @@ public class BingeBuddyController {
             dashboard.setReviews(reviewRepository.findByUser_Id(userId));
             return ResponseEntity.ok(dashboard);
         }
-
         return ResponseEntity.notFound().build();
     }
 
-
+    // Works!!
+    // http://localhost:8080/search?query=jaws
     @GetMapping("/search")
     public ResponseEntity<List<Movie>> searchMovies(@RequestParam String query) {
         String apiUrl = String.format("%s?s=%s&apikey=%s", apiConfig.getApiUrl(), query, apiConfig.getApiKey());
@@ -73,6 +76,8 @@ public class BingeBuddyController {
     }
 
 
+    // Works!!
+    // http://localhost:8080/movie?apiId=9215233
     @GetMapping("/movie")
     public ResponseEntity<Movie> getMovieDetails(@RequestParam String apiId) {
         Optional<Movie> existingMovie = movieRepository.findByApiId(apiId);
@@ -92,7 +97,9 @@ public class BingeBuddyController {
         }
     }
 
-
+    // Works!! (Tested by sending info as JSON & without any JSON but with request params)
+    // http://localhost:8080/watchlist?apiId=121233&userId=3&status=COMPLETED
+    // http://localhost:8080/watchlist?apiId=121233&userId=1&status=PLANNED
     @PostMapping("/watchlist")
     public ResponseEntity<String> addToWatchlist(
             @RequestParam String apiId,
@@ -136,7 +143,8 @@ public class BingeBuddyController {
                 (scheduledDate != null ? " and scheduled for: " + scheduledDate : ""));
     }
 
-
+    // Works!!   (Response is too long, have to check out relationship mapping)
+    // http://localhost:8080/watchlist/1
     @GetMapping("/watchlist/{watchlistId}")
     public ResponseEntity<List<Watchlist>> getWatchlist() {
         List<Watchlist> watchlist = watchlistRepository.findAll();
@@ -183,8 +191,8 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Review created successfully.");
     }
 
-
-
+    // Works!! (Response is too long, have to check out relationship mapping)
+    // http://localhost:8080/review?movieId=1
     @GetMapping("/review")
     public ResponseEntity<List<Review>> getReviews(@RequestParam Integer movieId) {
         List<Review> reviews = reviewRepository.findByMovieId(movieId);
@@ -192,6 +200,8 @@ public class BingeBuddyController {
     }
 
 
+    // (Response is too long, have to check out relationship mapping)
+    // http://localhost:8080/review/1
     @GetMapping("review/{reviewId}")
     public ResponseEntity<Review> getReviewById(@PathVariable Integer reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
@@ -228,6 +238,8 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Review deleted successfully.");
     }
 
+    // Works!! (Needed JSON in body)
+    // http://localhost:8080/comments?reviewId=1&comment=Thriller
     @PostMapping("/comments")
     public ResponseEntity<String> createComment(@RequestParam Integer reviewId, @RequestBody Comment comment) {
         Optional<Review> review = reviewRepository.findById(reviewId);
@@ -243,7 +255,8 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Comment added successfully.");
     }
 
-
+    // Works!!
+    // http://localhost:8080/comments?reviewId=1
     @GetMapping("/comments")
     public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
         List<Comment> comments = commentRepository.findByReview_Id(reviewId);
@@ -285,6 +298,24 @@ public class BingeBuddyController {
         commentRepository.delete(comment.get());
         return ResponseEntity.ok("Comment deleted successfully.");
     }
+
+
+    // Get Comments for a particular User
+//    @GetMapping("/comments/all")
+//    public ResponseEntity<List<Comment> getAllUserComments(@RequestParam int ) {
+//        List<Comment> userComments = commentRepository.findByReview_Id()
+//        return ResponseEntity.ok(users);
+//    }
+//
+//
+//    // Get Reviews for a particular User
+//    @GetMapping("/reviews/all")
+//
+//
+//    // Get Watchlists for a particular User
+//    @GetMapping("/watchlists/all")
+
+    //@GetMapping("/email")  // In the UserController
 
 }
 
