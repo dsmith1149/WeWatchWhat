@@ -7,29 +7,33 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { useAuth } from "./AuthContext";
 
 const NavBarComponent = () => {
+  const { logout } = useAuth();
   const navigator = useNavigate();
 
-  const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuth();
+  // const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuth();
 
-  const logIn = (e) => {
-    e.preventDefault();
-    setIsLoggedIn(true);
-    // setAuthUser({
-    //   Name: "Santa Claus",
-    // });
-  };
+  // const logIn = (e) => {
+  //   e.preventDefault();
 
-  const logOut = (e) => {
+  //   // setIsLoggedIn(true);
+  //   // setAuthUser({
+  //   //   Name: "Santa Claus",
+  //   // });
+  // };
+
+  const logoutUser = (e) => {
     e.preventDefault();
-    setIsLoggedIn(false);
-    // setAuthUser(null);
+    logout();
     navigator("/");
+
+    // setIsLoggedIn(false);
+    // setAuthUser(null);
   };
 
   // const { setAuth } = useContext(AuthContext);
 
   // const handleSelect = (eventKey) => alert(`selected ${eventKey}`);
-  const handleSelect = (eventKey) => navigator(`${eventKey}`);
+  // const handleSelect = (eventKey) => navigator(`${eventKey}`);
 
   return (
     <>
@@ -41,47 +45,15 @@ const NavBarComponent = () => {
           </Navbar.Brand>
 
           <Nav className="justify-content-end nav-link navbar-brand text-light">
-            <NavDropdown title="Menu" id="nav-dropdown" onSelect={handleSelect}>
-              <NavDropdown.Item eventKey="/">Home</NavDropdown.Item>
-
-              {isLoggedIn ? (
-                <NavDropdown.Item eventKey="/">Logout</NavDropdown.Item>
-              ) : (
-                <NavDropdown.Item eventKey="/">Login</NavDropdown.Item>
-              )}
-
-              {/* <NavDropdown.Item eventKey="/dashboard-main/1"> */}
-
-              <NavDropdown.Divider />
-              <NavDropdown.Item eventKey="/search-movie">
-                Search Movie
-              </NavDropdown.Item>
-              <NavDropdown.Item eventKey="/search-user">
-                Search User
-              </NavDropdown.Item>
-            </NavDropdown>
-
-            {isLoggedIn ? (
-              <button
-                class="btn btn-outline-success"
-                type="submit"
-                onClick={(e) => {
-                  logOut(e);
-                }}
-              >
-                Logout
-              </button>
-            ) : (
-              <button
-                class="btn btn-outline-success"
-                type="submit"
-                onClick={(e) => {
-                  logIn(e);
-                }}
-              >
-                Login
-              </button>
-            )}
+            <button
+              className="btn btn-outline-success"
+              type="submit"
+              onClick={(e) => {
+                logoutUser(e);
+              }}
+            >
+              Logout
+            </button>
           </Nav>
         </Container>
       </Navbar>

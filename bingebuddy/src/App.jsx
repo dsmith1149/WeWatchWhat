@@ -22,6 +22,7 @@ import ReviewsRatingsComponent from "./components/ReviewsRatingsComponent";
 import DashboardCommentsComponent from "./components/DashboardCommentsComponent";
 import SingleMovieComponent from "./components/SingleMovieComponent";
 import { AuthProvider } from "./components/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   // const [user, setUser] = useState(null);
@@ -35,9 +36,8 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        {/* <AuthContextComponent.Provider value={{ user, login, logout }}></AuthContextComponent.Provider> */}
-        <AuthProvider>
+      <AuthProvider>
+        <BrowserRouter>
           <NavBarComponent />
           <Routes>
             <Route path="/" element={<LoginPageComponent />}></Route>
@@ -46,58 +46,111 @@ function App() {
             <Route path="/signup" element={<SignUpPageComponent />}></Route>
             <Route
               path="/search-movie"
-              element={<SearchMovieComponent />}
+              element={
+                <ProtectedRoute>
+                  <SearchMovieComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/search-user"
-              element={<SearchUserComponent />}
+              element={
+                <ProtectedRoute>
+                  <SearchUserComponent />
+                </ProtectedRoute>
+              }
             ></Route>
-            <Route path="/list-users" element={<ListUserComponent />}></Route>
-            <Route path="/users" element={<ListUserComponent />}></Route>
-            <Route path="/add-user" element={<UserComponent />}></Route>
+            {/* <Route path="/list-users" element={<ListUserComponent />}></Route> */}
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute>
+                  <ListUserComponent />
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path="/add-user"
+              element={
+                <ProtectedRoute>
+                  <UserComponent />
+                </ProtectedRoute>
+              }
+            ></Route>
             <Route path="/update-user/:id" element={<UserComponent />}></Route>
             <Route path="/comments/1" element={<CommentsComponent />}></Route>
             <Route
               path="/review-rate/1"
-              element={<ReviewsRatingsComponent />}
+              element={
+                <ProtectedRoute>
+                  <ReviewsRatingsComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/dashboard-main/1"
-              element={<DashboardMainComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardMainComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/user-profile/1"
-              element={<DashboardProfileComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardProfileComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/user-reviews/1"
-              element={<DashboardReviewComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardReviewComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/user-comments/1"
-              element={<DashboardCommentsComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardCommentsComponent />
+                </ProtectedRoute>
+              }
             ></Route>
-            <Route
+            {/* <Route
               path="/user-settings/1"
               element={<DashboardSettingsComponent />}
-            ></Route>
+            ></Route> */}
             <Route
               path="/user-trends/1"
-              element={<DashboardTrendsComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardTrendsComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="/user-watchlists/1"
-              element={<DashboardWatchlistsComponent />}
+              element={
+                <ProtectedRoute>
+                  <DashboardWatchlistsComponent />
+                </ProtectedRoute>
+              }
             ></Route>
             <Route
               path="single-movie/1"
-              element={<SingleMovieComponent />}
+              element={
+                <ProtectedRoute>
+                  <SingleMovieComponent />
+                </ProtectedRoute>
+              }
             ></Route>
           </Routes>
           <FooterComponent />
-        </AuthProvider>
-      </BrowserRouter>
-      {/* </AuthContextComponent.Provider> */}
+        </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }

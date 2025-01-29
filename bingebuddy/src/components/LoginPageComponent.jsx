@@ -3,72 +3,139 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 import { useAuth } from "./AuthContext";
+import validator from "validator";
 
 const LoginPageComponent = () => {
-  const { setAuth, authUser, setAuthUser, isLoggedIn, setIsLoggedIn } =
-    useAuth();
+  // const { setAuth, authUser, setAuthUser, isLoggedIn, setIsLoggedIn } =
+  //   useAuth();
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  // const [loginSuccess, setLoginSuccess] = useState(false); // --- DELETE LATER ---
-
+  const [loginSuccess, setLoginSuccess] = useState(false); // --- DELETE LATER ---
   // const { user, logout } = useContext(AuthContextComponent);
+
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  // --- start of Validation ---
+  function validateForm(username, password) {
+    let i = 0;
+
+    if (!validator.isEmail(username)) {
+      console.log("Please enter a valid email");
+      i++;
+      // setLoginSuccess(false);
+    }
+
+    if (!password) {
+      console.log("Enter Password");
+      i++;
+      // setLoginSuccess(false);
+    }
+    // if (password.length < 8) {
+    if (password.length < 5) {
+      console.log("Password must be atleast 8 characters");
+      i++;
+      // setLoginSuccess(false);
+    }
+    if (!/\d/.test(password)) {
+      console.log("Password must include a number");
+      i++;
+      // setLoginSuccess(false);
+    }
+
+    if (i > 0) {
+      setLoginSuccess(false);
+
+      const errorsCopy = { ...errors };
+
+      if (username.trim()) {
+        errorsCopy.username = "";
+      } else {
+        errorsCopy.username = "Enter a Email";
+        // valid = "false";
+      }
+
+      if (password.trim()) {
+        errorsCopy.password = "";
+      } else {
+        errorsCopy.password = "Enter a password";
+        // valid = "false";
+      }
+
+      setErrors(errorsCopy);
+      console.log("Incorrect email or password. Please enter correct details.");
+    } else {
+      setLoginSuccess(true);
+    }
+    return;
+  } // --- End of Validation ---
+
+  // const passwordValidator = (password) => {
+
+  // }; // end of password validation
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
-    const loginData = { username, password };
+    validateForm(username, password);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/login",
-        loginData,
+    // } // end validateForm()
 
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+    if (loginSuccess) {
+      const loginData = { username, password };
+      console.log(loginData);
 
-      const accessToken = response?.data.accessToken;
-      setAuth({ loginData, accessToken });
-      setIsLoggedIn(true);
-      setAuthUser({ loginData });
-      setUserName("");
-      setPassword("");
-      // setLoginSuccess(true); // --- DELETE LATER ---
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/login",
+          loginData,
 
-      if (response.status === 200) {
-        console.log("Login successful");
-        navigate("/dashboard-main/1");
-      } else {
-        setIsLoggedIn(false);
-        setAuthUser(null);
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
 
+        // const accessToken = response?.data.accessToken;
+        // setAuth({ loginData, accessToken });
+        // setIsLoggedIn(true);
+        // setAuthUser({ loginData });
+        setUserName("");
+        setPassword("");
+        // setLoginSuccess(true); // --- DELETE LATER ---
+
+        if (response.status === 200) {
+          login(); // useAuth Login-Logout
+          console.log("Login successful");
+          navigate("/dashboard-main/1");
+        } else {
+          // setIsLoggedIn(false);
+          // setAuthUser(null);
+
+          const errorData = await response.json();
+          setError(errorData.message && "Login failed for user. Please retry!");
+          console.log("Login failed");
+        } // end of if
+      } catch (error) {
         const errorData = await response.json();
         setError(errorData.message && "Login failed for user. Please retry!");
         console.log("Login failed");
-      } // end of if
-    } catch (error) {
-      if (!error?.response) {
-        setError("No Server Response");
-        console.error("No Server Response", error);
-      } else if (error.response?.status === 400) {
-        setError("Missing username or Password");
-        console.error("Missing username or Password", error);
-      } else if (error.response?.status === 401) {
-        setError("Unauthorized");
-        console.error("Anauthorized", error);
-      } else {
-        setError("Login failed");
-        console.error("Login error", error);
+
+        setError("Error! Please retry.");
+        console.error("Error! Please retry.", error);
+
+        //navigate("/");
       }
     }
-    //setLoginSuccess(true);
   };
 
   // --- DELETE LATER ---
@@ -103,6 +170,9 @@ const LoginPageComponent = () => {
                 required
                 onChange={(e) => setUserName(e.target.value)}
               />
+              {errors.username && (
+                <div className="invalid-feedback"> {errors.username} </div>
+              )}
             </div>
             <div className="input-container">
               <input
@@ -112,6 +182,9 @@ const LoginPageComponent = () => {
                 required
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {errors.password && (
+                <div className="invalid-feedback"> {errors.password} </div>
+              )}
             </div>
             <div className="input-container">
               <button

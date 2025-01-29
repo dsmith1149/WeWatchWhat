@@ -8,12 +8,13 @@ const DashboardMainComponent = () => {
   const [open, setOpen] = useState(true);
   const Menus = [
     { title: "Dashboard", src: "Chart_fill", path: "/dashboard-main/1" },
-    { title: "Profile", src: "User", path: "/user-profile/1", gap: true },
+    { title: "Profile", src: "User", path: "/user-profile/1" },
     { title: "Reviews", src: "Chat", path: "/user-reviews/1" },
     { title: "Comments", src: "Folder", path: "/user-comments/1" },
     { title: "Watchlists ", src: "Calendar", path: "/user-watchlists/1" },
     { title: "Trends", src: "Chart", path: "/user-trends/1" },
-    { title: "Search Users", src: "Search", path: "/search-user", gap: true },
+    { title: "Search Movies", src: "Search", path: "/search-movie" },
+    { title: "Search Users", src: "Search", path: "/search-user" },
     //{ title: "Settings", src: "Setting", path:"/user-settings/1" },
   ];
 
