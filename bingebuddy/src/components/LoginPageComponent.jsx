@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +9,12 @@ import validator from "validator";
 const LoginPageComponent = () => {
   // const { setAuth, authUser, setAuthUser, isLoggedIn, setIsLoggedIn } =
   //   useAuth();
+
+const LoginPageComponent = () => {
+import React, {useState} from 'react'
+import axios from 'axios'
+import '../App.css';
+
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +57,7 @@ const LoginPageComponent = () => {
       i++;
       // setLoginSuccess(false);
     }
+
 
     if (i > 0) {
       setLoginSuccess(false);
