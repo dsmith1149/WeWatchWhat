@@ -1,4 +1,5 @@
-import {useState } from "react";
+import React, {useState } from "react";
+import SidebarComponent from "./SidebarComponent";
 import AddToListButton from "./AddToListButton";
 
 
@@ -45,6 +46,12 @@ export default function SearchMovie() {
   }
 
   return(
+     <div className="flex">
+      <div>
+        <SidebarComponent />
+      </div>
+        
+    
     <div>
 
       <h1>Enter the name of a movie!</h1>
@@ -55,7 +62,9 @@ export default function SearchMovie() {
       <ul>{showMovies.map((x) => displayMovies(x))}</ul>
       
 
+    </div>
 
     </div>
   )
 }
+

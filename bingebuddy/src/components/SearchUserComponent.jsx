@@ -1,12 +1,20 @@
+import React from "react";
+import SidebarComponent from "./SidebarComponent";
+
 
 const SearchUserComponent = () => {
   return (
-    <div>
-        <h1 className='center'>             
-            Search for a User!
-        </h1>
-    </div>
-  )
-}
+    <div className="flex">
+      <div>
+        <SidebarComponent />
+      </div>
 
-export default SearchUserComponent
+
+    
+    
+    
+    </div>
+  );
+};
+
+export default SearchUserComponent;
