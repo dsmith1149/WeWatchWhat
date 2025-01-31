@@ -76,8 +76,10 @@ const SignUpPageComponent = () => {
       !/\d/.test(userData.confirmPassword.length)
     ) {
       errorsCopy.password =
-        "Password must contain a number & be atleast 8 characters";
-      console.log("Password must contain a number & be atleast 8 characters");
+        "Passwords cannot be blank & must contain a number & be atleast 8 characters";
+      console.log(
+        "Passwords cannot be blank & must contain a number & be atleast 8 characters"
+      );
       i++;
       console.log("Value in i : " + i);
       return;

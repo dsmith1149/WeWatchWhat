@@ -1,6 +1,25 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+
+// import ListUserComponent from "./components/ListUserComponent";
+// import UserComponent from "./components/UserComponent";
+// import FooterComponent from "./components/FooterComponent";
+// import HomePageComponent from "./components/HomePageComponent";
+// import NavBarComponent from "./components/NavBarComponent";
+// import LoginPageComponent from "./components/LoginPageComponent";
+// import SearchMovieComponent from "./components/SearchMovieComponent";
+// import SearchUserComponent from "./components/SearchUserComponent";
+// import SignUpPageComponent from "./components/SignUpPageComponent";
+// import DashboardMainComponent from "./components/DashboardMainComponent";
+// import DashboardProfileComponent from "./components/DashboardProfileComponent";
+// import DashboardReviewComponent from "./components/DashboardReviewComponent";
+// import DashboardSettingsComponent from "./components/DashboardSettingsComponent";
+// import DashboardTrendsComponent from "./components/DashboardTrendsComponent";
+// import DashboardWatchlistsComponent from "./components/DashboardWatchlistsComponent";
+// import CommentsComponent from "./components/CommentsComponent";
+// import ReviewsRatingsComponent from "./components/ReviewsRatingsComponent";
+// import DashboardCommentsComponent from "./components/DashboardCommentsComponent";
+// import SingleMovieComponent from "./components/SingleMovieComponent";
 
 import ListUserComponent from "./components/ListUserComponent";
 import UserComponent from "./components/UserComponent";
