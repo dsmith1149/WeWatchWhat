@@ -54,7 +54,7 @@ const DashboardReviewComponent = () => {
       </div> */}
 
       <div className="container ">
-        <h2 className="text-center header"> Reviews </h2>
+        <h2 className="header"> Reviews </h2>
         <div className="table-wrapper">
           <table className="table table-striped table-bordered">
             <thead>

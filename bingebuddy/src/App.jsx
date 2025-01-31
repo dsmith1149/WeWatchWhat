@@ -38,7 +38,7 @@ function App() {
     <>
       <AuthProvider>
         <BrowserRouter>
-          <NavBarComponent />
+          {/* <NavBarComponent /> */}
           <Routes>
             <Route path="/" element={<LoginPageComponent />}></Route>
             {/* <Route path='/' element={<HomePageComponent />}></Route> */}
@@ -48,6 +48,7 @@ function App() {
               path="/search-movie"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SearchMovieComponent />
                 </ProtectedRoute>
               }
@@ -56,6 +57,7 @@ function App() {
               path="/search-user"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SearchUserComponent />
                 </ProtectedRoute>
               }
@@ -65,6 +67,7 @@ function App() {
               path="/users"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <ListUserComponent />
                 </ProtectedRoute>
               }
@@ -73,6 +76,7 @@ function App() {
               path="/add-user"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <UserComponent />
                 </ProtectedRoute>
               }
@@ -83,6 +87,7 @@ function App() {
               path="/review-rate/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <ReviewsRatingsComponent />
                 </ProtectedRoute>
               }
@@ -91,6 +96,7 @@ function App() {
               path="/dashboard-main/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardMainComponent />
                 </ProtectedRoute>
               }
@@ -99,6 +105,7 @@ function App() {
               path="/user-profile/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardProfileComponent />
                 </ProtectedRoute>
               }

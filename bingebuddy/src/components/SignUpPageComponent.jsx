@@ -3,58 +3,163 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
+import validator from "validator";
 
 const SignUpPageComponent = () => {
   const [userData, setUserData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    genre: "",
+    anotherGenre: "",
   });
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const [error, setError] = useState("");
+
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  const errorsCopy = { ...errors };
+
+  let i = 0; // Counter to track signup validation
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    e.preventDefault();
+
     setUserData({
       ...userData,
       [e.target.name]: e.target.value,
     });
+
+    setErrors("", "");
   };
+
+  //  Validation
+
+  // --- start of Validation ---
+  function validateForm() {
+    if (userData.username.trim && userData.password.trim) {
+      // if characters in username-password, set errorsCopy to empty
+      errorsCopy.username = "";
+      errorsCopy.password = "";
+    } else {
+      errorsCopy.username = "Enter Email & Password"; // if either email or password is empty, display a generic msg for both
+      //errorsCopy.password = "Enter Password";
+      console.log("Enter Email & Password");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+    if (!validator.isEmail(userData.username)) {
+      errorsCopy.username = "Please enter a valid email"; // msg displayed
+      console.log("Please enter a valid email");
+      console.log("Value in i : " + i);
+      i++;
+      return;
+    }
+
+    if (
+      userData.password.length < 8 ||
+      !/\d/.test(userData.password.length) ||
+      userData.confirmPassword.length < 8 ||
+      !/\d/.test(userData.confirmPassword.length)
+    ) {
+      errorsCopy.password =
+        "Password must contain a number & be atleast 8 characters";
+      console.log("Password must contain a number & be atleast 8 characters");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+
+    // Checking if passwords match
+    if (userData.password !== userData.confirmPassword) {
+      console.log("Passwords do not match");
+      // setError("Passwords do not match!");
+      i++;
+      errorsCopy.password = "Passwords do not match!";
+      return;
+    }
+
+    if (userData.firstName.length <= 0) {
+      errorsCopy.firstName = "Please enter First Name";
+      console.log("First Name empty");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+
+    if (userData.lastName.length <= 0) {
+      errorsCopy.lastName = "Please enter Last Name";
+      console.log("Last Name empty");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+
+    if (userData.genre.length <= 0) {
+      errorsCopy.lastName = "Please enter a Genre of your choice";
+      console.log("Genre empty");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+  } // --- End of validateForm() ---
 
   const handleRegistration = async (e) => {
     e.preventDefault();
 
-    if (userData.password !== userData.confirmPassword) {
-      console.log("Passwords do not match");
-      setError("Passwords do not match!");
-      return;
-    }
+    // if (userData.password !== userData.confirmPassword) {
+    //   console.log("Passwords do not match");
+    //   setError("Passwords do not match!");
+    //   return;
+    // }
     setError("");
 
-    try {
+    validateForm();
+    setErrors(errorsCopy);
+    console.log(
+      "From handleRegistration() -- after username password etc validation"
+    );
+
+    if (i <= 0) {
       console.log(userData);
 
-      // Testing this part out...
-      // const response = await axios.post('http://localhost:8080/api/users/add-user-login', userData);
+      setErrors(errorsCopy);
+      console.log(userData);
 
-      const response = await axios.post(
-        "http://localhost:8080/register",
-        userData
-      );
-      if (response.status == 201) {
-        console.log("user registered: ", response.data);
+      try {
         console.log(userData);
-      } else {
-        const errorText = await response.text();
-        setError(errorText);
+
+        const response = await axios.post(
+          "http://localhost:8080/register",
+          userData
+        );
+
+        if (response.status == 201) {
+          console.log("user registered: ", response.data);
+          console.log(userData);
+        } else {
+          const errorText = await response.text();
+          setError(errorText);
+        }
+      } catch (error) {
+        setError("An error occurred during user registration");
+        console.log("Registration error: ", error);
       }
-    } catch (error) {
-      setError("An eror occurred during user registration");
-      console.log("Registration error: ", error);
+      setRegistrationSuccess(true);
     }
-    setRegistrationSuccess(true);
   };
 
   if (registrationSuccess) {
@@ -63,7 +168,7 @@ const SignUpPageComponent = () => {
         <div className="login-container">
           <h1> Registered successfully</h1>
           <p>
-            To complete signup enter <a href="/add-user">your details </a>
+            Login to access <a href="/">your account </a>
           </p>
         </div>
       </div>
@@ -74,7 +179,7 @@ const SignUpPageComponent = () => {
     <div className="container login-container">
       <form>
         <div className="login-form">
-          <h2 className="text-center header">Create BingeBuddy Account</h2>
+          <h2 className="text-center">Create BingeBuddy Account</h2>
 
           <div className="input-container">
             <input
@@ -107,6 +212,50 @@ const SignUpPageComponent = () => {
             />
           </div>
 
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="First Name"
+              name="firstName"
+              value={userData.firstName}
+              required
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Last Name"
+              name="lastName"
+              value={userData.lastName}
+              required
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Enter Genre of choice"
+              name="genre"
+              value={userData.genre}
+              required
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Enter Genre Optional"
+              name="anotherGenre"
+              value={userData.anotherGenre}
+              required
+              onChange={handleChange}
+            />
+          </div>
+
           {error && { error }}
 
           <button
@@ -120,13 +269,16 @@ const SignUpPageComponent = () => {
             <p className="registration-link">
               Already have an account? <a href="/">Login here</a>
             </p>
+            <p className="cerror" name="errorlabel">
+              {errorsCopy.username}
+              {errorsCopy.password}
+              {errorsCopy.firstName}
+              {errorsCopy.lastName}
+              {errorsCopy.genre}
+            </p>
           </div>
-        </div>
-
-        <div className="flex">
-          {/* <div className="column g-0 mt-5"> */}
-          <div className="home-image"></div>
-          {/* </div> */}
+          <br />
+          <p></p>
         </div>
       </form>
     </div>

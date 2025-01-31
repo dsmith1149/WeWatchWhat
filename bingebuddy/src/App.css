@@ -105,7 +105,7 @@
 
 .registration-link {
   text-align: center;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   font-size: 14px;
 }
 
@@ -217,4 +217,19 @@
 .login-logout {
   height: 45px;
   width: 60px;
+}
+
+.cerror {
+  color: #c51244 !important;
+  background: #fdfdfd !important;
+  /* padding: 10px !important; */
+  border-radius: 0 !important;
+  position: relative;
+  display: inline-block !important;
+  /* box-shadow: 1px 1px 1px #aaaaaa; */
+  margin-top: 10px;
+}
+
+.logoutButton {
+  display: none;
 }

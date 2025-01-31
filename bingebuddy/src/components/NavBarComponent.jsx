@@ -46,7 +46,8 @@ const NavBarComponent = () => {
 
           <Nav className="justify-content-end nav-link navbar-brand text-light">
             <button
-              className="btn btn-outline-success"
+              className="btn btn-outline-success logoutButton"
+              name="logoutButton"
               type="submit"
               onClick={(e) => {
                 logoutUser(e);
