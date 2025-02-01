@@ -59,6 +59,11 @@ public class UserController {
     }
 
 
+    // update user
+    // @PutMapping()
+
+
+
     // -----
     // Doesn't work - needs User object in Request Body
     // http://localhost:8080/users/register

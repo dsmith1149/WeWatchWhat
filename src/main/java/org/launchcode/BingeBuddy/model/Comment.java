@@ -14,11 +14,22 @@ public class Comment extends AbstractEntity {
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public String getContent() {
         return content;

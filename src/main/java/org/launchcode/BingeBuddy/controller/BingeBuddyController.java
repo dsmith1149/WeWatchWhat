@@ -45,6 +45,43 @@ public class BingeBuddyController {
     }
 
 
+// Need endpoints -
+// http://localhost:8080/api/users/comments/userId
+// http://localhost:8080/api/users/reviews/userId
+// http://localhost:8080/api/users/watchlists/userId
+
+    // Charts:
+// http://localhost:8080/api/users/averageuser
+// http://localhost:8080/api/users//currentuser/userId
+
+// http://localhost:8080/api/users/currentuser/allreviews/userId
+// http://localhost:8080/api/users/currentuser/allcomments/userId
+// http://localhost:8080/api/users/currentuser/allwatchlists/userId
+
+// http://localhost:8080/api/users/currentuser/reviews-weekly/userId
+// http://localhost:8080/api/users/currentuser/comments-weekly/userId
+// http://localhost:8080/api/users/currentuser/watchlists-weekly/userId
+
+
+
+    // Works!!
+    // http://localhost:8080/comments?reviewId=1
+    @GetMapping("/comments")
+    public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
+        List<Comment> comments = commentRepository.findByReview_Id(reviewId);
+        return ResponseEntity.ok(comments);
+    }
+
+
+    @GetMapping("comments/{commentId}")
+    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        return comment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
     // Works!! (Doesn't return comments)
     // http://localhost:8080/dashboard/3
     @GetMapping("/dashboard/{userId}")
@@ -76,8 +113,6 @@ public class BingeBuddyController {
     }
 
 
-    // Works!!
-    // http://localhost:8080/movie?apiId=9215233
     @GetMapping("/movie")
     public ResponseEntity<Movie> getMovieDetails(@RequestParam String apiId) {
         Optional<Movie> existingMovie = movieRepository.findByApiId(apiId);
@@ -255,21 +290,7 @@ public class BingeBuddyController {
         return ResponseEntity.ok("Comment added successfully.");
     }
 
-    // Works!!
-    // http://localhost:8080/comments?reviewId=1
-    @GetMapping("/comments")
-    public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
-        List<Comment> comments = commentRepository.findByReview_Id(reviewId);
-        return ResponseEntity.ok(comments);
-    }
 
-
-    @GetMapping("comments/{commentId}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        return comment.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 
 
     @PutMapping("comments/{commentId}")
@@ -300,9 +321,9 @@ public class BingeBuddyController {
     }
 
 
-    // Get Comments for a particular User
+//    // Get Comments for a particular User
 //    @GetMapping("/comments/all")
-//    public ResponseEntity<List<Comment> getAllUserComments(@RequestParam int ) {
+//    public ResponseEntity<List<Comment> getAllUserComments(@RequestParam int userid) {
 //        List<Comment> userComments = commentRepository.findByReview_Id()
 //        return ResponseEntity.ok(users);
 //    }
