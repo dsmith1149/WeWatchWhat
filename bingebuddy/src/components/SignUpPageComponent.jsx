@@ -16,7 +16,7 @@ const SignUpPageComponent = () => {
     anotherGenre: "",
   });
 
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState();
 
   const [error, setError] = useState("");
 
@@ -148,29 +148,58 @@ const SignUpPageComponent = () => {
           "http://localhost:8080/register",
           userData
         );
+        // .then((response) => {
+
+        //   if (response.data.id) {
+        //     console.log("ID exists!");
+        //     setRegistrationSuccess(1);
+        //   } else {
+        //     console.log("ID doesn't exist!");
+        //     setRegistrationSuccess(2);
+        //   }
+        // });
 
         if (response.status == 201) {
           console.log("user registered: ", response.data);
           console.log(userData);
+
+          if (response.data.id) {
+            setRegistrationSuccess(1);
+          } else {
+            setRegistrationSuccess(2);
+          }
         } else {
           const errorText = await response.text();
           setError(errorText);
+          setRegistrationSuccess(2);
         }
       } catch (error) {
         setError("An error occurred during user registration");
         console.log("Registration error: ", error);
+        setRegistrationSuccess(2);
       }
-      setRegistrationSuccess(true);
+      // setRegistrationSuccess(true);
     }
   };
 
-  if (registrationSuccess) {
+  if (registrationSuccess === 1) {
     return (
       <div className="centered-container">
         <div className="login-container">
-          <h1> Registered successfully</h1>
+          <h1>Registered successfully</h1>
           <p>
             Login to access <a href="/">your account </a>
+          </p>
+        </div>
+      </div>
+    );
+  } else if (registrationSuccess === 2) {
+    return (
+      <div className="centered-container">
+        <div className="login-container">
+          <h1>Something went wrong. Please try again</h1>
+          <p>
+            <a href="/signup">Click to sign up </a>
           </p>
         </div>
       </div>

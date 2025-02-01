@@ -3,7 +3,6 @@ import { createUser, getUser, updateUser } from "../services/UserService";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-
 const UserComponent = () => {
   const [username, setUserName] = useState("");
   const [firstName, setFirstName] = useState("");

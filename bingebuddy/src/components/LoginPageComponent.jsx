@@ -113,7 +113,7 @@ const LoginPageComponent = () => {
           console.log(
             "From catch after try axios: Login failed for user. Please retry!"
           );
-          setError(
+          setErrors(
             errorData.message &&
               "From else after 200 msg: Login failed for user. Please retry!"
           ); // check if this msg is displayed
@@ -121,7 +121,7 @@ const LoginPageComponent = () => {
         } // end of if
       } catch (error) {
         const errorData = await response.json();
-        setError(
+        setErrors(
           errorData.message &&
             "From catch after try axios: Login failed for user. Please retry!"
         );
@@ -175,7 +175,7 @@ const LoginPageComponent = () => {
                 Login
               </button>
             </div>
-            {error && { error }}
+            {/* {error && { error }} */}
             <div className="login-link">
               <p className="registration-link">
                 Don't have an account?{" "}
@@ -188,6 +188,7 @@ const LoginPageComponent = () => {
             {errorsCopy.username}
             <br />
             {errorsCopy.password}
+            {error}
           </p>
         </div>
       </form>

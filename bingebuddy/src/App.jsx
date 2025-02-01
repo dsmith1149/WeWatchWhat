@@ -60,9 +60,11 @@ function App() {
           {/* <NavBarComponent /> */}
           <Routes>
             <Route path="/" element={<LoginPageComponent />}></Route>
+            <Route path="/signup" element={<SignUpPageComponent />}></Route>
+
             {/* <Route path='/' element={<HomePageComponent />}></Route> */}
             {/* <Route path='/login' element={<LoginPageComponent />}></Route> */}
-            <Route path="/signup" element={<SignUpPageComponent />}></Route>
+
             <Route
               path="/search-movie"
               element={
@@ -133,6 +135,7 @@ function App() {
               path="/user-reviews/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardReviewComponent />
                 </ProtectedRoute>
               }
@@ -141,6 +144,7 @@ function App() {
               path="/user-comments/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardCommentsComponent />
                 </ProtectedRoute>
               }
@@ -153,6 +157,7 @@ function App() {
               path="/user-trends/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardTrendsComponent />
                 </ProtectedRoute>
               }
@@ -161,6 +166,7 @@ function App() {
               path="/user-watchlists/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardWatchlistsComponent />
                 </ProtectedRoute>
               }
@@ -169,6 +175,7 @@ function App() {
               path="single-movie/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SingleMovieComponent />
                 </ProtectedRoute>
               }

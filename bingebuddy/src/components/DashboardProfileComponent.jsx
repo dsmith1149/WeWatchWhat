@@ -1,22 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import SidebarComponent from "./SidebarComponent";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DashboardProfileComponent = () => {
-  const [email, setEmail] = useState("");
-  // const[userName, setUserName] = useState('')
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [genre1, setGenre1] = useState("");
-  const [genre2, setGenre2] = useState("");
+  // const [username, setUserName] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
+  // const [genre, setGenre1] = useState("");
+  // const [anotherGenre, setGenre2] = useState("");
 
-  const navigate = useNavigate();
+  const [userData, setUserData] = useState({
+    username: "",
+    firstName: "",
+    lastName: "",
+    genre: "",
+    anotherGenre: "",
+  });
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    navigate("/add-user");
-  };
+  const { id } = useParams();
+
+  const [errors, setErrors] = useState();
+
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    const loadData = async (e) => {
+      //e.preventDefault();
+      //navigate("/add-user");
+
+      setErrors(errorsCopy);
+      console.log(userData);
+
+      try {
+        const response = await axios.get("http://localhost:8080/user/1");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile");
+        }
+
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        setErrors(error.message);
+      }
+    };
+    //loadData());
+  });
 
   return (
     <div className="flex">
@@ -32,12 +62,12 @@ const DashboardProfileComponent = () => {
               <form>
                 <div className="form-group mb-2">
                   {/* Generated automatically, user doesn't have to type in */}
-                  <label className="form-label"> Email: </label>
+                  <label className="form-label"> Username: </label>
                   <input
                     type="text"
-                    placeholder="Enter Email"
-                    name="email"
-                    value={email}
+                    placeholder="Email"
+                    name="username"
+                    value={userData.username}
                     className={`form-control`}
                     disabled
                     // readOnly
@@ -50,7 +80,7 @@ const DashboardProfileComponent = () => {
                     type="text"
                     placeholder="Enter First Name"
                     name="firstName"
-                    value={firstName}
+                    value={userData.firstName}
                     className={`form-control`}
                     disabled
                   ></input>
@@ -61,7 +91,7 @@ const DashboardProfileComponent = () => {
                     type="text"
                     placeholder="Enter Last Name"
                     name="lastName"
-                    value={lastName}
+                    value={userData.lastName}
                     className={`form-control`}
                     disabled
                   ></input>
@@ -72,8 +102,8 @@ const DashboardProfileComponent = () => {
                   <input
                     type="text"
                     placeholder="Enter Genre"
-                    name="genre1"
-                    value={genre1}
+                    name="genre"
+                    value={userData.genre}
                     className={`form-control`}
                     disabled
                   ></input>
@@ -87,14 +117,14 @@ const DashboardProfileComponent = () => {
                     type="text"
                     placeholder="Enter Another Genre"
                     name="genre2"
-                    value={genre2}
+                    value={userData.anotherGenre}
                     className={`form-control`}
                     disabled
                   ></input>
                 </div>
-                <button className="btn btn-success" onClick={handleClick}>
+                {/* <button className="btn btn-success" onClick={handleClick}>
                   Click to Update
-                </button>
+                </button> */}
               </form>
             </div>
           </div>

@@ -72,7 +72,44 @@ const DashboardMainComponent = () => {
         {/* 1 */}
 
         <div className="h-screen flex-1 p-7">
-          <h1 className="text-2xl font-semibold">Welcome Delia {}!</h1>
+          {/* <h1 className="text-2xl font-semibold">Welcome BingeBuddy User!</h1> */}
+
+          <h1>Welcome BingeBuddy User!</h1>
+
+          <div className="container-dashmain">
+            <div className="header">
+              <h2> </h2>
+            </div>
+
+            <div className="logo-image"></div>
+
+            <div class="content">
+              <p className="logo-text">
+                Welcome to Bingebuddy – your go-to destination for honest,
+                insightful, and entertaining movie reviews!
+              </p>
+              <p className="logo-text">
+                Whether you’re searching for the next must-watch blockbuster, a
+                hidden indie gem, or a binge-worthy film series, we’ve got you
+                covered.
+              </p>
+
+              <p className="logo-text">
+                Our reviews dive deep into storytelling, performances,
+                cinematography, and everything that makes a movie unforgettable.
+              </p>
+
+              <p className="logo-text">
+                Stay updated with the latest releases, explore classics, and
+                join a community of fellow movie lovers who share your passion
+                for cinema.
+              </p>
+
+              <p className="logo-text">
+                Let Bingebuddy be your trusted guide for what to watch next!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -233,3 +233,45 @@
 .logoutButton {
   display: none;
 }
+
+.container-dashmain {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "menu content"
+    "footer footer";
+  grid-template-columns: 1fr 3fr;
+  gap: 5px;
+
+  padding: 5px;
+}
+.container-dashmain > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+}
+.container-dashmain > div.header {
+  grid-area: header;
+  text-align: center;
+}
+.container-dashmain > div.menu {
+  grid-area: menu;
+}
+.container-dashmain > div.content {
+  grid-area: content;
+}
+
+.container-dashmain > div.footer {
+  grid-area: footer;
+}
+
+.logo-image {
+  background-image: url("./Images/BBLogo3Md.png");
+  height: 350px;
+  width: 350px;
+}
+
+.logo-text {
+  padding-left: 50px;
+  padding-right: 150px;
+  font-size: 18px;
+}

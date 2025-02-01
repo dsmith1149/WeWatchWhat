@@ -55,7 +55,8 @@ const DashboardWatchlistsComponent = () => {
           <h4>Pick from the list to check out the status of your movies:</h4>
 
           <select id="watchlists" name="watchlists">
-            <option value="TO BE WATCHED">TO BE WATCHED</option>
+            <option value="PLANNED">TO BE WATCHED</option>
+            <option value="WATCHING">WATCHING</option>
             <option value="WATCHED">WATCHED</option>
           </select>
         </form>
