@@ -1,7 +1,9 @@
 package org.launchcode.BingeBuddy.controller;
 
 
+import org.hibernate.query.QueryParameter;
 import org.launchcode.BingeBuddy.data.UserRepository;
+import org.launchcode.BingeBuddy.model.Comment;
 import org.launchcode.BingeBuddy.model.LoginRequest;
 import org.launchcode.BingeBuddy.model.User;
 import org.launchcode.BingeBuddy.service.UserService;
@@ -34,12 +36,20 @@ public class UserController {
     // http://localhost:8080/register
     @PostMapping("/register")
     public ResponseEntity<User> registerNewUser(@RequestBody User user){
-        User newUser = userService.addUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+
+         Optional <User> optionalUser = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+
+            if(optionalUser.isEmpty()){
+                User newUser = userService.addUser(user);
+                return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+            }
+            else{
+                System.out.println("User doesn't exist");
+                return ResponseEntity.status(HttpStatus.CREATED).body(user);
+            }
     }
 
 
-    // WORKS!! ---
     // http://localhost:8080/login
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
@@ -58,38 +68,15 @@ public class UserController {
         }
     }
 
+    // User Profile
+    // http://localhost:8080/user/{userId}
+    @GetMapping("user/{userId}")
+    public ResponseEntity<User> getUserProfileByID(@PathVariable Integer userId){
 
-    // update user
-    // @PutMapping()
-
-
-
-    // -----
-    // Doesn't work - needs User object in Request Body
-    // http://localhost:8080/users/register
-//    @PostMapping("/register")
-//    public ResponseEntity<Map<String, Object>> registerUser(@RequestParam String email,
-//                                                            @RequestParam(required = false) String username,
-//                                                            @RequestParam(required = false) String firstName,
-//                                                            @RequestParam(required = false) String lastName) {
-//        // Create a new user entity
-//        User newUser = new User();
-//        newUser.setEmail(email);
-//        newUser.setUsername(username != null ? username : email); // Default username to email if not provided
-//        newUser.setFirstName(firstName);
-//        newUser.setLastName(lastName);
-//
-//
-//        User savedUser = userRepository.save(newUser);
-//
-//        // Return user ID and success message
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("message", "User registered successfully.");
-//        response.put("userId", savedUser.getId());
-//
-//        return ResponseEntity.ok(response);
-//    }
-
+        Optional <User> optionalUser = userRepository.findById(userId);
+            User newUser = userService.getUser(userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
 
 
     // Works!!

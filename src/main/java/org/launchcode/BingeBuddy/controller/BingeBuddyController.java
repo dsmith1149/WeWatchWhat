@@ -63,6 +63,20 @@ public class BingeBuddyController {
 // http://localhost:8080/api/users/currentuser/watchlists-weekly/userId
 
 
+    // http://localhost:8080/user-comments/2
+    @GetMapping("user-comments/{userId}")
+    public ResponseEntity<List<Comment>> getCommentsByUserID(@PathVariable Integer userId) {
+
+        List<Comment> commentsList = commentRepository.findByUserId(userId);
+        return ResponseEntity.ok(commentsList);
+
+//        if (commentsList.isEmpty()) {
+//            return ResponseEntity.ok(commentsList);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+    }
+
 
     // Works!!
     // http://localhost:8080/comments?reviewId=1

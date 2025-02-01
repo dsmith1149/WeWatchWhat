@@ -3,17 +3,20 @@ package org.launchcode.BingeBuddy.service;
 
 import org.launchcode.BingeBuddy.data.UserRepository;
 import org.launchcode.BingeBuddy.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+    @Autowired // added now
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository,
@@ -56,5 +59,6 @@ public class UserService {
 
         return true;
     }
+
 
 }

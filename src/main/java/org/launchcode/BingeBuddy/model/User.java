@@ -1,5 +1,6 @@
 package org.launchcode.BingeBuddy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -7,7 +8,10 @@ import jakarta.persistence.Table;
 @Table(name = "user")
 public class User extends AbstractEntity {
     private String username;
+
+    //@JsonIgnore
     private String password;
+
     private String firstName;
     private String lastName;
     private String genre;
