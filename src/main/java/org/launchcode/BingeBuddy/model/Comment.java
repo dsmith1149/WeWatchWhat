@@ -23,11 +23,11 @@ public class Comment extends AbstractEntity {
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public User getUser() {
+    public User getUserEntity() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUserEntity(User user) {
         this.user = user;
     }
 

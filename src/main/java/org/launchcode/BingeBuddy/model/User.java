@@ -1,6 +1,5 @@
 package org.launchcode.BingeBuddy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -18,6 +17,7 @@ public class User extends AbstractEntity {
     private String anotherGenre;
 //    private String email;
 
+    private String role;
 
 //    public String getEmail() {
 //        return email;
@@ -32,12 +32,13 @@ public class User extends AbstractEntity {
     public User() {
     }
 
-    public User(String username, String firstName, String lastName, String genre, String anotherGenre) {
+    public User(String username, String firstName, String lastName, String genre, String anotherGenre, String role) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.genre = genre;
         this.anotherGenre = anotherGenre;
+        this.role = role;
     }
 
     public User(Integer userId) {
@@ -92,6 +93,14 @@ public class User extends AbstractEntity {
 
     public void setAnotherGenre(String anotherGenre) {
         this.anotherGenre = anotherGenre;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
 

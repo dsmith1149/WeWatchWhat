@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class APIConfiguration {
+
     @Value("${external.api.key}")
     private String apiKey;
     @Value("${external.api.url}")

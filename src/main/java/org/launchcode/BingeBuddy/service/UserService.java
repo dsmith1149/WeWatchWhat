@@ -1,7 +1,7 @@
 package org.launchcode.BingeBuddy.service;
 
 
-import org.launchcode.BingeBuddy.data.UserRepository;
+import org.launchcode.BingeBuddy.data.UserEntityRepository;
 import org.launchcode.BingeBuddy.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,7 +9,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,40 +16,40 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired // added now
-    private final UserRepository userRepository;
+    private final UserEntityRepository userEntityRepository;
 
-    public UserService(UserRepository userRepository,
+    public UserService(UserEntityRepository userEntityRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        BCryptPasswordEncoder bCryptPasswordEncoder1){
 
-        this.userRepository = userRepository;
+        this.userEntityRepository = userEntityRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder1;
     }
 
     public List<User> getUsers(){
-        return userRepository.findAll();
+        return userEntityRepository.findAll();
     }
 
     public User getUser(Integer id){
-        return userRepository.findById(id).orElse(null);
+        return userEntityRepository.findById(id).orElse(null);
     }
 
     public User addUser(User userAuth){
         userAuth.setPassword(bCryptPasswordEncoder.encode(userAuth.getPassword()));
-        return userRepository.save(userAuth);
+        return userEntityRepository.save(userAuth);
     }
 
     public User updateUser(User userAuth){
-        return userRepository.save(userAuth);
+        return userEntityRepository.save(userAuth);
     }
 
     public void deleteUser(Integer id){
-        userRepository.deleteById(id);;
+        userEntityRepository.deleteById(id);;
     }
 
     public boolean authenticate(String username, String password){
 
-        User user = userRepository.findByUsername(username);
+        User user = userEntityRepository.findByUsername(username);
 
 
         if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
@@ -59,6 +58,8 @@ public class UserService {
 
         return true;
     }
+
+
 
 
 }

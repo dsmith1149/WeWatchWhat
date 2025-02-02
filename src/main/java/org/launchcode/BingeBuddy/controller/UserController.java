@@ -1,19 +1,15 @@
 package org.launchcode.BingeBuddy.controller;
 
 
-import org.hibernate.query.QueryParameter;
-import org.launchcode.BingeBuddy.data.UserRepository;
-import org.launchcode.BingeBuddy.model.Comment;
-import org.launchcode.BingeBuddy.model.LoginRequest;
-import org.launchcode.BingeBuddy.model.User;
+import org.launchcode.BingeBuddy.data.UserEntityRepository;
+import org.launchcode.BingeBuddy.model.*;
+import org.launchcode.BingeBuddy.service.AuthService;
 import org.launchcode.BingeBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -22,22 +18,25 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserEntityRepository userEntityRepository;
 
     @Autowired
-    public UserController(UserService userAuthService){
+    public UserController(UserService userAuthService, AuthService authService){
         this.userService = userAuthService;
+        this.authService = authService;
     }
 
     public UserService userService;
 
+    private final AuthService authService;
 
-    // WORKS!! ---
+
+    // -- signup
     // http://localhost:8080/register
     @PostMapping("/register")
     public ResponseEntity<User> registerNewUser(@RequestBody User user){
 
-         Optional <User> optionalUser = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+         Optional <User> optionalUser = Optional.ofNullable(userEntityRepository.findByUsername(user.getUsername()));
 
             if(optionalUser.isEmpty()){
                 User newUser = userService.addUser(user);
@@ -50,6 +49,7 @@ public class UserController {
     }
 
 
+    // -- login
     // http://localhost:8080/login
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
@@ -68,15 +68,46 @@ public class UserController {
         }
     }
 
-    // User Profile
+
+
+   //login with jwt token
+
+    @PostMapping(value = "/loginjwt" , consumes = "application/json")
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
+        return ResponseEntity.ok(authService.authenticate(authRequest));
+    }
+
+
+
+    // -- User Profile (Ready for use)
     // http://localhost:8080/user/{userId}
     @GetMapping("user/{userId}")
     public ResponseEntity<User> getUserProfileByID(@PathVariable Integer userId){
 
-        Optional <User> optionalUser = userRepository.findById(userId);
-            User newUser = userService.getUser(userId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        Optional <User> optionalUser = userEntityRepository.findById(userId);
+        User newUser = userService.getUser(userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
+
+
+//    // -- Testing: --- returns user object with name & id
+//    // http://localhost:8080/user/{userId}
+//    @GetMapping("user/{userId}")
+//    public ResponseEntity<User> getUserId(@PathVariable Integer userId) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.isAuthenticated()) {
+//            User user = (User) authentication.getPrincipal();
+//            return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
+//        }
+//        return null; // Or throw an exception if user is not authenticated
+//    }
+
+
+
+
+
+
+
 
 
     // Works!!
@@ -87,7 +118,7 @@ public class UserController {
                                                  @RequestParam(required = false) String genre,
                                                  @RequestParam(required = false) String anotherGenre) {
         // Fetch the user by ID
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional = userEntityRepository.findById(userId);
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found.");
         }
@@ -98,7 +129,7 @@ public class UserController {
         if (anotherGenre != null) user.setAnotherGenre(anotherGenre);
 
         // Save the updated user
-        userRepository.save(user);
+        userEntityRepository.save(user);
 
         return ResponseEntity.ok("User details updated successfully.");
     }
@@ -107,7 +138,7 @@ public class UserController {
     // http://localhost:8080/users/1
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userEntityRepository.findById(userId);
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
         } else {
@@ -116,15 +147,13 @@ public class UserController {
     }
 
 
-    //@GetMapping("/email")
-
 
 
     // Works!!
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
+        List<User> userEntities = userEntityRepository.findAll();
+        return ResponseEntity.ok(userEntities);
     }
 
 
@@ -132,7 +161,7 @@ public class UserController {
     // http://localhost:8080/users/add-test-user
     @PostMapping("/add-test-user")
     public ResponseEntity<String> addTestUser() {
-        Optional<User> existingUser = userRepository.findById(10);
+        Optional<User> existingUser = userEntityRepository.findById(10);
         if (existingUser.isEmpty()) {
             User testUser = new User();
             testUser.setEmail("test@example.com");
@@ -142,7 +171,7 @@ public class UserController {
             testUser.setGenre("Action");
             testUser.setAnotherGenre("Comedy");
 
-            userRepository.save(testUser);
+            userEntityRepository.save(testUser);
             return ResponseEntity.ok("Test user added with ID " + testUser.getId());
         } else {
             return ResponseEntity.ok("Test user already exists at ID 10");
@@ -161,7 +190,7 @@ public class UserController {
                                                   @RequestParam(required = false) String lastName,
                                                   @RequestParam(required = false) String genre,
                                                   @RequestParam(required = false) String anotherGenre) {
-        Optional<User> existingUser = userRepository.findById(userId);
+        Optional<User> existingUser = userEntityRepository.findById(userId);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             if (email != null) user.setEmail(email);
@@ -171,19 +200,20 @@ public class UserController {
             if (genre != null) user.setGenre(genre);
             if (anotherGenre != null) user.setAnotherGenre(anotherGenre);
 
-            userRepository.save(user);
+            userEntityRepository.save(user);
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+
     // ??
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUserById(@PathVariable Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userEntityRepository.findById(userId);
         if (user.isPresent()) {
-            userRepository.delete(user.get());
+            userEntityRepository.delete(user.get());
             return ResponseEntity.ok(user.get());
         }
         return ResponseEntity.notFound().build();
