@@ -59,17 +59,24 @@ public class BingeBuddyController {
 // http://localhost:8080/api/users/currentuser/allcomments/userId
 // http://localhost:8080/api/users/currentuser/allwatchlists/userId
 
-// http://localhost:8080/api/users/currentuser/reviews-weekly/userId
-// http://localhost:8080/api/users/currentuser/comments-weekly/userId
-// http://localhost:8080/api/users/currentuser/watchlists-weekly/userId
+
+    // 1. Returns all Review objects by UserId
+    // http:8080/user-reviews/{userId}
+    @GetMapping("user-reviews/{userId}")
+    public ResponseEntity<List<Review>> getAllReviewsByUserID(@PathVariable Integer userId){
+
+        List<Review> reviewList = reviewRepository.findByUserId(userId);
+        return ResponseEntity.ok(reviewList);
+    }
 
 
+    // 2. Returns all comment objects by UserId
     // http://localhost:8080/user-comments/2
     @GetMapping("user-comments/{userId}")
-    public ResponseEntity<List<Comment>> getCommentsByUserID(@PathVariable Integer userId) {
+    public ResponseEntity<List<Comment>> getAllCommentsByUserID(@PathVariable Integer userId) {
 
-        List<Comment> commentsList = commentRepository.findByUserId(userId);
-        return ResponseEntity.ok(commentsList);
+        List<Comment> commentList = commentRepository.findByUserId(userId);
+        return ResponseEntity.ok(commentList);
 
 //        if (commentsList.isEmpty()) {
 //            return ResponseEntity.ok(commentsList);
@@ -79,15 +86,56 @@ public class BingeBuddyController {
     }
 
 
-    // Works!!
-// http://localhost:8080/comments?reviewId=1
-@GetMapping("/comments")
-public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
-    List<Comment> comments = commentRepository.findByReview_Id(reviewId);
-    return ResponseEntity.ok(comments);
-}
+    // 3. Returns all Watchlist objects by UserId
+    // http:8080/user-watchlists/{userId}
+    @GetMapping("user-watchlists/{userId}")
+    public ResponseEntity<List<Watchlist>> getAllWatchlistsByUserID(@PathVariable Integer userId){
+        List<Watchlist> watchlistList = watchlistRepository.findAllByUserId(userId);
+        return ResponseEntity.ok(watchlistList);
+    }
 
 
+
+    // 4. Returns count of all Review objects by UserId
+    // http:8080/user-reviews/{userId}
+    @GetMapping("user-reviews-count/{userId}")
+    public ResponseEntity<Integer> getCountOfAllReviewsByUserID(@PathVariable Integer userId){
+
+        List<Review> reviewList = reviewRepository.findByUserId(userId);
+        return ResponseEntity.ok(reviewList.size());
+    }
+
+
+    // 5. Returns all comment objects by UserId
+    // http://localhost:8080/user-comments/2
+    @GetMapping("user-comments-count/{userId}")
+    public ResponseEntity<Integer> getCountOfAllCommentsByUserID(@PathVariable Integer userId) {
+
+        List<Comment> commentList = commentRepository.findByUserId(userId);
+        return ResponseEntity.ok(commentList.size());
+
+//        if (!commentList.isEmpty()) {       // if not empty
+//            return ResponseEntity.ok(commentList.size());
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+    }
+
+
+    // 6. Returns all Watchlist objects by UserId
+    // http:8080/user-watchlists/{userId}
+    @GetMapping("user-watchlists-count/{userId}")
+    public ResponseEntity<List<Watchlist>> getWatchlistsByUserID(@PathVariable Integer userId){
+        List<Watchlist> watchlistList = watchlistRepository.findAllByUserId(userId);
+        return ResponseEntity.ok(watchlistList);
+    }
+
+
+
+
+
+
+    // ------------
 @GetMapping("comments/{commentId}")
 public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
     Optional<Comment> comment = commentRepository.findById(commentId);
@@ -96,7 +144,16 @@ public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId) {
 }
 
 
+//
+// Works!!
+// http://localhost:8080/comments?reviewId=1
+    @GetMapping("/comments")
+    public ResponseEntity<List<Comment>> getCommentsByReview(@RequestParam Integer reviewId) {
+        List<Comment> comments = commentRepository.findByReview_Id(reviewId);
+        return ResponseEntity.ok(comments);
+    }
 
+// D.S:
 // Works!! (Doesn't return comments)
 // http://localhost:8080/dashboard/3
 @GetMapping("/dashboard/{userId}")
@@ -107,7 +164,7 @@ public ResponseEntity<UserDashboard> getDashboard(@PathVariable Integer userId) 
         UserDashboard dashboard = new UserDashboard();
         dashboard.setUser(user.get());
         dashboard.setWatchlist(watchlistRepository.findByUser_Id(userId));
-        dashboard.setReviews(reviewRepository.findByUser_Id(userId));
+        dashboard.setReviews(reviewRepository.findByUserId(userId));
         return ResponseEntity.ok(dashboard);
     }
     return ResponseEntity.notFound().build();
