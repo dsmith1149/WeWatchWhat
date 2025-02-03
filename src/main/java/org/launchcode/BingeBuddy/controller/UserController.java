@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/users")
+//@RequestMapping("/users")         // Do not uncomment this!
 public class UserController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class UserController {
     private final AuthService authService;
 
 
-    // -- signup
+    // -- signup  -- K-WORKS!!
     // http://localhost:8080/register
     @PostMapping("/register")
     public ResponseEntity<User> registerNewUser(@RequestBody User user){
@@ -49,7 +49,7 @@ public class UserController {
     }
 
 
-    // -- login
+    // -- login   -- K-WORKS!!
     // http://localhost:8080/login
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
@@ -69,19 +69,18 @@ public class UserController {
     }
 
 
-
-   //login with jwt token
-
-    @PostMapping(value = "/loginjwt" , consumes = "application/json")
+    // login with JWT Token   -- K-WORKS!!
+    @PostMapping("/loginjwt")
+    // @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
 
 
 
-    // -- User Profile (Ready for use)
-    // http://localhost:8080/user/{userId}
-    @GetMapping("user/{userId}")
+    // -- User Profile (Ready for use)  -- K-WORKS!!
+    // http://localhost:8080/user-profile/{userId}
+    @GetMapping("user-profile/{userId}")
     public ResponseEntity<User> getUserProfileByID(@PathVariable Integer userId){
 
         Optional <User> optionalUser = userEntityRepository.findById(userId);
@@ -90,17 +89,6 @@ public class UserController {
     }
 
 
-//    // -- Testing: --- returns user object with name & id
-//    // http://localhost:8080/user/{userId}
-//    @GetMapping("user/{userId}")
-//    public ResponseEntity<User> getUserId(@PathVariable Integer userId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            User user = (User) authentication.getPrincipal();
-//            return ResponseEntity.status(HttpStatus.ACCEPTED).body(user);
-//        }
-//        return null; // Or throw an exception if user is not authenticated
-//    }
 
 
 
@@ -110,7 +98,9 @@ public class UserController {
 
 
 
-    // Works!!
+
+
+    // Works!! D.S.
     // http://localhost:8080/users/userdetails?userId=1
     // http://localhost:8080/users/userdetails?userId=3
     @PostMapping("/userdetails")

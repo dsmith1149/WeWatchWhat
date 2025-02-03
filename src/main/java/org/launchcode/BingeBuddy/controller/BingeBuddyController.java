@@ -46,22 +46,11 @@ public class BingeBuddyController {
         return "BingeBuddy";
     }
 
-// Need endpoints -
-// http://localhost:8080/api/users/comments/userId
-// http://localhost:8080/api/users/reviews/userId
-// http://localhost:8080/api/users/watchlists/userId
 
-    // Charts:
-// http://localhost:8080/api/users/averageuser
-// http://localhost:8080/api/users//currentuser/userId
+    // For charts:
 
-// http://localhost:8080/api/users/currentuser/allreviews/userId
-// http://localhost:8080/api/users/currentuser/allcomments/userId
-// http://localhost:8080/api/users/currentuser/allwatchlists/userId
-
-
-    // 1. Returns all Review objects by UserId
-    // http:8080/user-reviews/{userId}
+    // 1. Returns all Review objects by UserId  -- K-WORKS!!
+    // http://localhost:8080/user-reviews/{userId}
     @GetMapping("user-reviews/{userId}")
     public ResponseEntity<List<Review>> getAllReviewsByUserID(@PathVariable Integer userId){
 
@@ -70,7 +59,7 @@ public class BingeBuddyController {
     }
 
 
-    // 2. Returns all comment objects by UserId
+    // 2. Returns all comment objects by UserId  -- K-WORKS!!
     // http://localhost:8080/user-comments/2
     @GetMapping("user-comments/{userId}")
     public ResponseEntity<List<Comment>> getAllCommentsByUserID(@PathVariable Integer userId) {
@@ -86,8 +75,8 @@ public class BingeBuddyController {
     }
 
 
-    // 3. Returns all Watchlist objects by UserId
-    // http:8080/user-watchlists/{userId}
+    // 3. Returns all Watchlist objects by UserId  -- K-WORKS!!
+    // http://localhost:8080/user-watchlists/{userId}
     @GetMapping("user-watchlists/{userId}")
     public ResponseEntity<List<Watchlist>> getAllWatchlistsByUserID(@PathVariable Integer userId){
         List<Watchlist> watchlistList = watchlistRepository.findAllByUserId(userId);
@@ -96,8 +85,8 @@ public class BingeBuddyController {
 
 
 
-    // 4. Returns count of all Review objects by UserId
-    // http:8080/user-reviews/{userId}
+    // 4. Returns count of all Review objects by UserId  -- K-WORKS!!
+    // http://localhost:8080/user-reviews-count/{userId}
     @GetMapping("user-reviews-count/{userId}")
     public ResponseEntity<Integer> getCountOfAllReviewsByUserID(@PathVariable Integer userId){
 
@@ -106,8 +95,8 @@ public class BingeBuddyController {
     }
 
 
-    // 5. Returns all comment objects by UserId
-    // http://localhost:8080/user-comments/2
+    // 5. Returns all comment objects by UserId  -- K-WORKS!!
+    // http://localhost:8080/user-comments-count/2
     @GetMapping("user-comments-count/{userId}")
     public ResponseEntity<Integer> getCountOfAllCommentsByUserID(@PathVariable Integer userId) {
 
@@ -122,12 +111,12 @@ public class BingeBuddyController {
     }
 
 
-    // 6. Returns all Watchlist objects by UserId
-    // http:8080/user-watchlists/{userId}
+    // 6. Returns all Watchlist objects by UserId  -- K-WORKS!!
+    // http://localhost:8080/user-watchlists-count/{userId}
     @GetMapping("user-watchlists-count/{userId}")
-    public ResponseEntity<List<Watchlist>> getWatchlistsByUserID(@PathVariable Integer userId){
+    public ResponseEntity<Integer> getWatchlistsByUserID(@PathVariable Integer userId){
         List<Watchlist> watchlistList = watchlistRepository.findAllByUserId(userId);
-        return ResponseEntity.ok(watchlistList);
+        return ResponseEntity.ok(watchlistList.size());
     }
 
 

@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = null;
         String jwtToken = null;
 
-        if (request.getServletPath().equals("/auth/login")) {
+        if (request.getServletPath().equals("/login")) {
             chain.doFilter(request, response);
             return;
         }
