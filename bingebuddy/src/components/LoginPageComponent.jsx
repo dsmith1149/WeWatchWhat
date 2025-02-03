@@ -63,7 +63,7 @@ const LoginPageComponent = () => {
       return;
     }
 
-    if (password.length < 8 || !/\d/.test(password)) {
+    if (password.length < 5 || !/\d/.test(password)) {
       errorsCopy.password =
         "Password must contain a number & be atleast 8 characters";
       console.log("Password must contain a number & be atleast 8 characters");
