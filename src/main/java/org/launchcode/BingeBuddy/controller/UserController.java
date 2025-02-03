@@ -213,6 +213,7 @@ public class UserController {
     // Works
     // http://localhost:8080/users/search?email=sda@gmail.com
     // http://localhost:8080/users/search?email=julie@cooks.com
+
 //    @GetMapping("/search")
 //    public ResponseEntity<User> searchUserByEmailOrUsername(
 //            @RequestParam(required = false) String email,
@@ -232,6 +233,20 @@ public class UserController {
 //
 //        return user.map(ResponseEntity::ok)
 //                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
+
+
+    // // Gives a WebSecurity Exception
+//    @GetMapping("/search")
+//    public ResponseEntity<?> searchUsersByUsername(@RequestParam String username) {
+//        List<User> users = userEntityRepository.findByUsernameContaining(username);
+//
+//        if (users.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
+//        }
+//
+//        return ResponseEntity.ok(users);
 //    }
 
 }

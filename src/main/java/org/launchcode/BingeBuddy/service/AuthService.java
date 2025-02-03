@@ -34,7 +34,7 @@ public class AuthService {
         User user = userEntityRepository.findByUsername(userDetails.getUsername());
 
         String token = jwtUtil.generateToken(user.getId().toString());      // ID as claim
-       // String token = jwtUtil.generateToken(userDetails.getUsername());
+       //String token = jwtUtil.generateToken(userDetails.getUsername());
 
         return new JwtResponse(token);
     }

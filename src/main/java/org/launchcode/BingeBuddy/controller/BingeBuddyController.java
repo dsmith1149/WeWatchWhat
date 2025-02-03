@@ -1,6 +1,7 @@
 package org.launchcode.BingeBuddy.controller;
 
 
+import org.json.JSONObject;
 import org.launchcode.BingeBuddy.config.APIConfiguration;
 import org.launchcode.BingeBuddy.data.*;
 import org.launchcode.BingeBuddy.model.*;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,8 @@ public class BingeBuddyController {
     @Autowired
     private WatchlistRepository watchlistRepository;
 
+    @Autowired
+    private UserActivityDTORepository userActivityDTORepository;
 
     @Autowired
     private APIConfiguration apiConfig;
@@ -66,12 +70,6 @@ public class BingeBuddyController {
 
         List<Comment> commentList = commentRepository.findByUserId(userId);
         return ResponseEntity.ok(commentList);
-
-//        if (commentsList.isEmpty()) {
-//            return ResponseEntity.ok(commentsList);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
     }
 
 
@@ -119,6 +117,32 @@ public class BingeBuddyController {
         return ResponseEntity.ok(watchlistList.size());
     }
 
+
+
+    // 7. Returns json string for user activity
+    // http://localhost:8080/user-activity/{userId}
+    @GetMapping("/user-activity/{userId}")
+    public ResponseEntity<String> getActivity(@PathVariable Integer userId) {
+        List<JSONObject> jsonList = new ArrayList<>();
+        List<Object[]> activities = userActivityDTORepository.getCurrentUserActivity(userId);
+        if (! activities.isEmpty()) {
+            Object[] row = activities.get(0); //get first row
+            jsonList.add(createObject("Reviews", (row[0] != null) ? row[0].toString() : "0"));
+            jsonList.add(createObject("Comments", (row[1] != null) ? row[1].toString() : "0"));
+            jsonList.add(createObject("Watchlist", (row[2] != null) ? row[2].toString() : "0"));
+            return ResponseEntity.ok(jsonList.toString());
+        }
+        else return ResponseEntity.ok("[{\"label\":\"Reviews\",\"value\":\"0\"}, {\"label\":\"Comments\",\"value\":\"0\"}, {\"label\":\"Watchlist\",\"value\":\"0\"}]");
+
+    }
+
+    private static JSONObject createObject(String label, String value)
+    {
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("label",label);
+        jsonObj.put("value",value);
+        return jsonObj;
+    }
 
 
 
