@@ -31,12 +31,14 @@ const LoginPageComponent = () => {
     e.preventDefault();
     setUserName(e.target.value);
     setErrors("", "");
+    setError("");
   };
 
   const handleChangePassword = (e) => {
     e.preventDefault();
     setPassword(e.target.value);
     setErrors("", "");
+    setError("");
   };
 
   // --- start of Validation ---
@@ -76,20 +78,19 @@ const LoginPageComponent = () => {
     setError(""); // Server side errors
     setErrors("", ""); // username-password validation
 
-    console.log("From handleLogin() -- before username password validation");
-
     validateForm(username, password);
 
     setErrors(errorsCopy);
-    console.log("From handleLogin() -- after username password validation");
 
     if (i <= 0) {
       const loginData = { username, password };
       console.log(loginData);
 
+      // http://localhost:8080/login
+
       try {
         const response = await axios.post(
-          "http://localhost:8080/login",
+          "http://localhost:8080/loginjwt",
           loginData,
           {
             headers: { "Content-Type": "application/json" },
@@ -97,8 +98,10 @@ const LoginPageComponent = () => {
           }
         );
 
-        // const accessToken = response?.data.accessToken;
-        // setAuth({ loginData, accessToken });
+        const accessToken = response?.data.token;
+        localStorage.setItem("Token", accessToken);
+
+        //setAuth({ loginData, accessToken });
         // setIsLoggedIn(true);
         // setAuthUser({ loginData });
         setUserName("");
@@ -113,22 +116,15 @@ const LoginPageComponent = () => {
           console.log(
             "From catch after try axios: Login failed for user. Please retry!"
           );
-          setErrors(
+          setError(
             errorData.message &&
               "From else after 200 msg: Login failed for user. Please retry!"
           ); // check if this msg is displayed
           console.log("Login failed");
         } // end of if
       } catch (error) {
-        const errorData = await response.json();
-        setErrors(
-          errorData.message &&
-            "From catch after try axios: Login failed for user. Please retry!"
-        );
-        console.log("Login failed ----- ");
-
-        setError("Error! Please retry.");
-        console.error("Error! Please retry.", error);
+        setError("Error logging in! Please retry.");
+        console.error("Error logging in! Please retry.", error);
 
         //navigate("/");
       }
@@ -175,7 +171,7 @@ const LoginPageComponent = () => {
                 Login
               </button>
             </div>
-            {/* {error && { error }} */}
+
             <div className="login-link">
               <p className="registration-link">
                 Don't have an account?{" "}

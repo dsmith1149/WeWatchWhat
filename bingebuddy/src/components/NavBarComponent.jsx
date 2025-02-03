@@ -40,7 +40,7 @@ const NavBarComponent = () => {
       {/* <Navbar bg="primary" data-bs-theme="dark"> */}
       <Navbar className="navbar navbar-custom d-flex navbar-brand text-light">
         <Container>
-          <Navbar.Brand className="navbar-brand text-light" href="/">
+          <Navbar.Brand className="navbar-brand text-light">
             BingeBuddy: An Online Movie Rating Platform
           </Navbar.Brand>
 
