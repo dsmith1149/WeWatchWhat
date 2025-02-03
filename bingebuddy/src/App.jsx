@@ -1,29 +1,26 @@
-
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ListUserComponent from './components/ListUserComponent'
-import UserComponent from './components/UserComponent'
-import FooterComponent from './components/FooterComponent'
-import HomePageComponent from './components/HomePageComponent'
-import NavBarComponent from './components/NavBarComponent'
-import LoginPageComponent from './components/LoginPageComponent'
-import SearchMovieComponent from './components/SearchMovieComponent'
-import SearchUserComponent from './components/SearchUserComponent'
-import SignUpPageComponent from './components/SignUpPageComponent'
-import DashboardMainComponent from './components/DashboardMainComponent'
-import DashboardProfileComponent from './components/DashboardProfileComponent'
-import DashboardReviewComponent from './components/DashboardReviewComponent'
-import DashboardSettingsComponent from './components/DashboardSettingsComponent'
-import DashboardTrendsComponent from './components/DashboardTrendsComponent'
-import DashboardWatchlistsComponent from './components/DashboardWatchlistsComponent'
-import CommentsComponent from './components/CommentsComponent'
-import ReviewsRatingsComponent from './components/ReviewsRatingsComponent'
-import DashboardCommentsComponent from './components/DashboardCommentsComponent'
-import SingleMovieComponent from './components/SingleMovieComponent'
+// import ListUserComponent from "./components/ListUserComponent";
+// import UserComponent from "./components/UserComponent";
+// import FooterComponent from "./components/FooterComponent";
+// import HomePageComponent from "./components/HomePageComponent";
+// import NavBarComponent from "./components/NavBarComponent";
+// import LoginPageComponent from "./components/LoginPageComponent";
+// import SearchMovieComponent from "./components/SearchMovieComponent";
+// import SearchUserComponent from "./components/SearchUserComponent";
+// import SignUpPageComponent from "./components/SignUpPageComponent";
+// import DashboardMainComponent from "./components/DashboardMainComponent";
+// import DashboardProfileComponent from "./components/DashboardProfileComponent";
+// import DashboardReviewComponent from "./components/DashboardReviewComponent";
+// import DashboardSettingsComponent from "./components/DashboardSettingsComponent";
+// import DashboardTrendsComponent from "./components/DashboardTrendsComponent";
+// import DashboardWatchlistsComponent from "./components/DashboardWatchlistsComponent";
+// import CommentsComponent from "./components/CommentsComponent";
+// import ReviewsRatingsComponent from "./components/ReviewsRatingsComponent";
+// import DashboardCommentsComponent from "./components/DashboardCommentsComponent";
+// import SingleMovieComponent from "./components/SingleMovieComponent";
+
 import ListUserComponent from "./components/ListUserComponent";
 import UserComponent from "./components/UserComponent";
 import FooterComponent from "./components/FooterComponent";
@@ -46,7 +43,6 @@ import SingleMovieComponent from "./components/SingleMovieComponent";
 import { AuthProvider } from "./components/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-
 function App() {
   // const [user, setUser] = useState(null);
   // const login = (userData) => {
@@ -61,16 +57,19 @@ function App() {
     <>
       <AuthProvider>
         <BrowserRouter>
-          <NavBarComponent />
+          {/* <NavBarComponent /> */}
           <Routes>
             <Route path="/" element={<LoginPageComponent />}></Route>
+            <Route path="/signup" element={<SignUpPageComponent />}></Route>
+
             {/* <Route path='/' element={<HomePageComponent />}></Route> */}
             {/* <Route path='/login' element={<LoginPageComponent />}></Route> */}
-            <Route path="/signup" element={<SignUpPageComponent />}></Route>
+
             <Route
               path="/search-movie"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SearchMovieComponent />
                 </ProtectedRoute>
               }
@@ -79,6 +78,7 @@ function App() {
               path="/search-user"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SearchUserComponent />
                 </ProtectedRoute>
               }
@@ -88,6 +88,7 @@ function App() {
               path="/users"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <ListUserComponent />
                 </ProtectedRoute>
               }
@@ -96,6 +97,7 @@ function App() {
               path="/add-user"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <UserComponent />
                 </ProtectedRoute>
               }
@@ -106,6 +108,7 @@ function App() {
               path="/review-rate/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <ReviewsRatingsComponent />
                 </ProtectedRoute>
               }
@@ -114,6 +117,7 @@ function App() {
               path="/dashboard-main/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardMainComponent />
                 </ProtectedRoute>
               }
@@ -122,6 +126,7 @@ function App() {
               path="/user-profile/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardProfileComponent />
                 </ProtectedRoute>
               }
@@ -130,6 +135,7 @@ function App() {
               path="/user-reviews/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardReviewComponent />
                 </ProtectedRoute>
               }
@@ -138,6 +144,7 @@ function App() {
               path="/user-comments/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardCommentsComponent />
                 </ProtectedRoute>
               }
@@ -150,6 +157,7 @@ function App() {
               path="/user-trends/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardTrendsComponent />
                 </ProtectedRoute>
               }
@@ -158,6 +166,7 @@ function App() {
               path="/user-watchlists/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <DashboardWatchlistsComponent />
                 </ProtectedRoute>
               }
@@ -166,6 +175,7 @@ function App() {
               path="single-movie/1"
               element={
                 <ProtectedRoute>
+                  <NavBarComponent />
                   <SingleMovieComponent />
                 </ProtectedRoute>
               }

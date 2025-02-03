@@ -40,13 +40,14 @@ const NavBarComponent = () => {
       {/* <Navbar bg="primary" data-bs-theme="dark"> */}
       <Navbar className="navbar navbar-custom d-flex navbar-brand text-light">
         <Container>
-          <Navbar.Brand className="navbar-brand text-light" href="/">
+          <Navbar.Brand className="navbar-brand text-light">
             BingeBuddy: An Online Movie Rating Platform
           </Navbar.Brand>
 
           <Nav className="justify-content-end nav-link navbar-brand text-light">
             <button
-              className="btn btn-outline-success"
+              className="btn btn-success logoutButton"
+              name="logoutButton"
               type="submit"
               onClick={(e) => {
                 logoutUser(e);

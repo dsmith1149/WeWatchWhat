@@ -70,6 +70,7 @@ const DashboardReviewComponent = () => {
                       <td>{review.created_at}</td>
                       <td>{review.content}</td>
                       <td>{review.movieId}</td> */}
+
               <tr>
                 <td>
                   <img
@@ -86,7 +87,6 @@ const DashboardReviewComponent = () => {
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
-                    {" "}
                     Update
                   </button>
                   <button
@@ -94,7 +94,6 @@ const DashboardReviewComponent = () => {
                     onClick={() => removeReview(review.id)}
                     style={{ marginLeft: "10px" }}
                   >
-                    {" "}
                     Delete
                   </button>
                 </td>
@@ -115,7 +114,6 @@ const DashboardReviewComponent = () => {
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
-                    {" "}
                     Update
                   </button>
                   <button
@@ -123,7 +121,6 @@ const DashboardReviewComponent = () => {
                     onClick={() => removeReview(review.id)}
                     style={{ marginLeft: "10px" }}
                   >
-                    {" "}
                     Delete
                   </button>
                 </td>
@@ -144,7 +141,6 @@ const DashboardReviewComponent = () => {
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
-                    {" "}
                     Update
                   </button>
                   <button
@@ -152,7 +148,6 @@ const DashboardReviewComponent = () => {
                     onClick={() => removeReview(review.id)}
                     style={{ marginLeft: "10px" }}
                   >
-                    {" "}
                     Delete
                   </button>
                 </td>
@@ -168,7 +163,6 @@ const DashboardReviewComponent = () => {
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
-                    {" "}
                     Update
                   </button>
                   <button
@@ -176,7 +170,6 @@ const DashboardReviewComponent = () => {
                     onClick={() => removeReview(review.id)}
                     style={{ marginLeft: "10px" }}
                   >
-                    {" "}
                     Delete
                   </button>
                 </td>

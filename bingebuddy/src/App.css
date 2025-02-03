@@ -40,7 +40,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 200vh;
 }
 
 .login-container {
@@ -91,7 +91,7 @@
   padding-bottom: 0.75rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-  background-color: #4f46e5;
+  background-color: #14b321;
   color: #ffffff;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -105,7 +105,7 @@
 
 .registration-link {
   text-align: center;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   font-size: 14px;
 }
 
@@ -133,7 +133,7 @@
   color: #081a51;
 }
 
-.App {
+.App-card {
   height: 90vh;
   width: 100%;
   display: flex;
@@ -143,7 +143,7 @@
   align-content: center;
   gap: 2vw;
   flex-wrap: wrap;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 
 /* .btn-update {
@@ -170,8 +170,8 @@
 }
 
 .categoryCard {
-  width: 40%;
-  height: 17rem;
+  width: 70%;
+  height: 25rem;
 }
 
 .grid-container {
@@ -217,4 +217,61 @@
 .login-logout {
   height: 45px;
   width: 60px;
+}
+
+.cerror {
+  color: #c51244 !important;
+  background: #fdfdfd !important;
+  /* padding: 10px !important; */
+  border-radius: 0 !important;
+  position: relative;
+  display: inline-block !important;
+  /* box-shadow: 1px 1px 1px #aaaaaa; */
+  margin-top: 10px;
+}
+
+.logoutButton {
+  display: none;
+}
+
+.container-dashmain {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "menu content"
+    "footer footer";
+  grid-template-columns: 1fr 3fr;
+  gap: 5px;
+
+  padding: 5px;
+}
+.container-dashmain > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+}
+.container-dashmain > div.header {
+  grid-area: header;
+  text-align: center;
+}
+.container-dashmain > div.menu {
+  grid-area: menu;
+}
+.container-dashmain > div.content {
+  grid-area: content;
+}
+
+.container-dashmain > div.footer {
+  grid-area: footer;
+}
+
+.logo-image {
+  background-image: url("./Images/BBLogo3Md.png");
+  height: 350px;
+  width: 350px;
+}
+
+.logo-text {
+  padding-left: 50px;
+  padding-right: 150px;
+  font-size: 18px;
 }

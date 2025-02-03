@@ -1,9 +1,13 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import axios from "axios";
 
 const DashboardMainComponent = () => {
   const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuth();
+
+  const [userId, setUserId] = useState(null);
+  const [userFirstName, setUserFirstName] = useState(null);
 
   const [open, setOpen] = useState(true);
   const Menus = [
@@ -17,6 +21,21 @@ const DashboardMainComponent = () => {
     { title: "Search Users", src: "Search", path: "/search-user" },
     //{ title: "Settings", src: "Setting", path:"/user-settings/1" },
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios
+        .get("http://localhost:8080/{userId}", {
+          header: { Authorization: "Bearer ${token}" },
+        })
+        .then((response) => setUserId(response.data))
+        .catch((error) => console.error(error));
+
+      setUserId(response.id);
+      setUserFirstName(response.firstName);
+    }
+  }, []);
 
   return (
     <>
@@ -72,7 +91,44 @@ const DashboardMainComponent = () => {
         {/* 1 */}
 
         <div className="h-screen flex-1 p-7">
-          <h1 className="text-2xl font-semibold">Welcome Delia {}!</h1>
+          {/* <h1 className="text-2xl font-semibold">Welcome BingeBuddy User!</h1> */}
+
+          <h1>Welcome BingeBuddy {userFirstName} !</h1>
+
+          <div className="container-dashmain">
+            <div className="header">
+              <h2> </h2>
+            </div>
+
+            <div className="logo-image"></div>
+
+            <div className="content">
+              <p className="logo-text">
+                Welcome to Bingebuddy – your go-to destination for honest,
+                insightful, and entertaining movie reviews!
+              </p>
+              <p className="logo-text">
+                Whether you’re searching for the next must-watch blockbuster, a
+                hidden indie gem, or a binge-worthy film series, we have got you
+                covered.
+              </p>
+
+              <p className="logo-text">
+                Our reviews dive deep into storytelling, performances,
+                cinematography, and everything that makes a movie unforgettable.
+              </p>
+
+              <p className="logo-text">
+                Stay updated with the latest releases, explore classics, and
+                join a community of fellow movie lovers who share your passion
+                for cinema.
+              </p>
+
+              <p className="logo-text">
+                Let Bingebuddy be your trusted guide for what to watch next!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </>

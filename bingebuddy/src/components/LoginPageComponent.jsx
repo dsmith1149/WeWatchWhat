@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,17 +9,10 @@ const LoginPageComponent = () => {
   // const { setAuth, authUser, setAuthUser, isLoggedIn, setIsLoggedIn } =
   //   useAuth();
 
-const LoginPageComponent = () => {
-import React, {useState} from 'react'
-import axios from 'axios'
-import '../App.css';
-
-
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // -------- Checks for errors after 200 msg ----------
 
-  const [loginSuccess, setLoginSuccess] = useState(false); // --- DELETE LATER ---
   // const { user, logout } = useContext(AuthContextComponent);
 
   const [errors, setErrors] = useState({
@@ -28,143 +20,119 @@ import '../App.css';
     password: "",
   });
 
+  const errorsCopy = { ...errors };
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  let i = 0; // Counter to track login-password
+
+  const handleChangeUsername = (e) => {
+    e.preventDefault();
+    setUserName(e.target.value);
+    setErrors("", "");
+    setError("");
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    setPassword(e.target.value);
+    setErrors("", "");
+    setError("");
+  };
+
   // --- start of Validation ---
   function validateForm(username, password) {
-    let i = 0;
-
-    if (!validator.isEmail(username)) {
-      console.log("Please enter a valid email");
-      i++;
-      // setLoginSuccess(false);
-    }
-
-    if (!password) {
-      console.log("Enter Password");
-      i++;
-      // setLoginSuccess(false);
-    }
-    // if (password.length < 8) {
-    if (password.length < 5) {
-      console.log("Password must be atleast 8 characters");
-      i++;
-      // setLoginSuccess(false);
-    }
-    if (!/\d/.test(password)) {
-      console.log("Password must include a number");
-      i++;
-      // setLoginSuccess(false);
-    }
-
-
-    if (i > 0) {
-      setLoginSuccess(false);
-
-      const errorsCopy = { ...errors };
-
-      if (username.trim()) {
-        errorsCopy.username = "";
-      } else {
-        errorsCopy.username = "Enter a Email";
-        // valid = "false";
-      }
-
-      if (password.trim()) {
-        errorsCopy.password = "";
-      } else {
-        errorsCopy.password = "Enter a password";
-        // valid = "false";
-      }
-
-      setErrors(errorsCopy);
-      console.log("Incorrect email or password. Please enter correct details.");
+    if (username.trim() && password.trim()) {
+      // if characters in username-password, set errorsCopy to empty
+      errorsCopy.username = "";
+      errorsCopy.password = "";
     } else {
-      setLoginSuccess(true);
+      errorsCopy.username = "Enter Email & Password"; // if either email or password is empty, display a generic msg for both
+      //errorsCopy.password = "Enter Password";
+      console.log("Enter Email & Password");
+      i++;
+      console.log("Value in i : " + i);
+      return;
     }
-    return;
-  } // --- End of Validation ---
+    if (!validator.isEmail(username)) {
+      errorsCopy.username = "Please enter a valid email"; // msg displayed
+      console.log("Please enter a valid email");
+      console.log("Value in i : " + i);
+      i++;
+      return;
+    }
 
-  // const passwordValidator = (password) => {
-
-  // }; // end of password validation
+    if (password.length < 8 || !/\d/.test(password)) {
+      errorsCopy.password =
+        "Password must contain a number & be atleast 8 characters";
+      console.log("Password must contain a number & be atleast 8 characters");
+      i++;
+      console.log("Value in i : " + i);
+      return;
+    }
+  } // --- End of validateForm() ---
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Server side errors
+    setErrors("", ""); // username-password validation
 
     validateForm(username, password);
 
-    // } // end validateForm()
+    setErrors(errorsCopy);
 
-    if (loginSuccess) {
+    if (i <= 0) {
       const loginData = { username, password };
       console.log(loginData);
 
+      // http://localhost:8080/login
+
       try {
         const response = await axios.post(
-          "http://localhost:8080/login",
+          "http://localhost:8080/loginjwt",
           loginData,
-
           {
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
           }
         );
 
-        // const accessToken = response?.data.accessToken;
-        // setAuth({ loginData, accessToken });
+        const accessToken = response?.data.token;
+        localStorage.setItem("Token", accessToken);
+
+        //setAuth({ loginData, accessToken });
         // setIsLoggedIn(true);
         // setAuthUser({ loginData });
         setUserName("");
         setPassword("");
-        // setLoginSuccess(true); // --- DELETE LATER ---
 
         if (response.status === 200) {
           login(); // useAuth Login-Logout
           console.log("Login successful");
           navigate("/dashboard-main/1");
         } else {
-          // setIsLoggedIn(false);
-          // setAuthUser(null);
-
           const errorData = await response.json();
-          setError(errorData.message && "Login failed for user. Please retry!");
+          console.log(
+            "From catch after try axios: Login failed for user. Please retry!"
+          );
+          setError(
+            errorData.message &&
+              "From else after 200 msg: Login failed for user. Please retry!"
+          ); // check if this msg is displayed
           console.log("Login failed");
         } // end of if
       } catch (error) {
-        const errorData = await response.json();
-        setError(errorData.message && "Login failed for user. Please retry!");
-        console.log("Login failed");
-
-        setError("Error! Please retry.");
-        console.error("Error! Please retry.", error);
+        setError("Error logging in! Please retry.");
+        console.error("Error logging in! Please retry.", error);
 
         //navigate("/");
       }
     }
   };
 
-  // --- DELETE LATER ---
-  // if (loginSuccess) {
-  //   return (
-  //     <div className="centered-container">
-  //       <div className="login-container">
-  //         <h1>Logged in successfully</h1>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
-      <div className="flex">
-        {/* <div className="row g-0 mt-5"> */}
-        <div className="home-image"></div>
-        {/* </div> */}
-      </div>
-
       <form>
         <div className="container login-container">
           <div className="login-form">
@@ -176,10 +144,10 @@ import '../App.css';
                 placeholder="Enter email"
                 value={username}
                 required
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={handleChangeUsername}
               />
-              {errors.username && (
-                <div className="invalid-feedback"> {errors.username} </div>
+              {errorsCopy.username && (
+                <div className="invalid-feedback"> {errorsCopy.username} </div>
               )}
             </div>
             <div className="input-container">
@@ -188,10 +156,10 @@ import '../App.css';
                 placeholder="Enter password"
                 value={password}
                 required
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChangePassword}
               />
-              {errors.password && (
-                <div className="invalid-feedback"> {errors.password} </div>
+              {errorsCopy.password && (
+                <div className="invalid-feedback"> {errorsCopy.password} </div>
               )}
             </div>
             <div className="input-container">
@@ -203,7 +171,7 @@ import '../App.css';
                 Login
               </button>
             </div>
-            {error && { error }}
+
             <div className="login-link">
               <p className="registration-link">
                 Don't have an account?{" "}
@@ -211,8 +179,21 @@ import '../App.css';
               </p>
             </div>
           </div>
+
+          <p className="cerror" name="errorlabel">
+            {errorsCopy.username}
+            <br />
+            {errorsCopy.password}
+            {error}
+          </p>
         </div>
       </form>
+
+      <div className="flex">
+        {/* <div className="row g-0 mt-5"> */}
+        <div className="home-image"></div>
+        {/* </div> */}
+      </div>
     </div>
   );
 };

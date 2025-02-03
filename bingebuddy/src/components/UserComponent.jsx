@@ -3,7 +3,6 @@ import { createUser, getUser, updateUser } from "../services/UserService";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-
 const UserComponent = () => {
   const [username, setUserName] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -244,8 +243,8 @@ const UserComponent = () => {
                   }`}
                   onChange={(e) => setGenre2(e.target.value)}
                 ></input>
-                {errors.genre1 && (
-                  <div className="invalid-feedback"> {errors.genre1} </div>
+                {errors.genre2 && (
+                  <div className="invalid-feedback"> {errors.genre2} </div>
                 )}
               </div>
 
