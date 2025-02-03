@@ -3,6 +3,8 @@ import SidebarComponent from "./SidebarComponent";
 import { Chart as ChartJS, defaults, registerables } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 
+import axios from "axios";
+
 import userTrends from "../data/userTrends.json";
 import averageUser from "../data/AverageUser.json";
 import commentsReviewsTrends from "../data/CommentsReviewsTrends.json";

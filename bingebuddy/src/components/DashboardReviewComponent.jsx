@@ -83,7 +83,7 @@ const DashboardReviewComponent = () => {
                   <p>Loved the movie!!</p>
                   <p>2nd April 2024</p>
 
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
@@ -95,7 +95,7 @@ const DashboardReviewComponent = () => {
                     style={{ marginLeft: "10px" }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
               <tr>
@@ -110,7 +110,7 @@ const DashboardReviewComponent = () => {
                   <p>Fantastic! My family had a fun time!</p>
                   <p>25th June 2024</p>
 
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
@@ -122,7 +122,7 @@ const DashboardReviewComponent = () => {
                     style={{ marginLeft: "10px" }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
               <tr>
@@ -137,7 +137,7 @@ const DashboardReviewComponent = () => {
                   <p>Would watch it again! An all around entertainer</p>
                   <p>15th July 2024</p>
 
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
@@ -149,7 +149,7 @@ const DashboardReviewComponent = () => {
                     style={{ marginLeft: "10px" }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
               <tr>
@@ -159,7 +159,7 @@ const DashboardReviewComponent = () => {
                 <td>
                   <p>Superb! My family's new favorite</p>
                   <p>10th Dec 2024</p>
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
@@ -171,7 +171,7 @@ const DashboardReviewComponent = () => {
                     style={{ marginLeft: "10px" }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
               <tr>
@@ -188,7 +188,7 @@ const DashboardReviewComponent = () => {
                   </p>
                   <p>25th Dec 2024</p>
 
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => updateReview(review.id)}
                   >
@@ -202,7 +202,7 @@ const DashboardReviewComponent = () => {
                   >
                     {" "}
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
               {/* </tr>)

@@ -66,7 +66,7 @@ const DashboardWatchlistsComponent = () => {
             <tr>
               <th>Date</th>
               <th>Movie</th>
-              <th>Action</th>
+              {/* <th>Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -79,7 +79,7 @@ const DashboardWatchlistsComponent = () => {
             <tr>
               <td>14th Feb 2025</td>
               <td>Captain America: Brave New World</td>
-              <td>
+              {/* <td>
                 <button
                   className="btn btn-secondary"
                   onClick={() => updateReview(review.id)}
@@ -93,12 +93,12 @@ const DashboardWatchlistsComponent = () => {
                 >
                   Delete
                 </button>
-              </td>
+              </td> */}
             </tr>
             <tr>
               <td> 23rd May 2025</td>
               <td>Mission: Impossible – The Final Reckoning</td>
-              <td>
+              {/* <td>
                 <button
                   className="btn btn-secondary"
                   onClick={() => updateReview(review.id)}
@@ -112,12 +112,12 @@ const DashboardWatchlistsComponent = () => {
                 >
                   Delete
                 </button>
-              </td>
+              </td> */}
             </tr>
             <tr>
               <td>2nd July 2025</td>
               <td>Jurassic World Rebirth</td>
-              <td>
+              {/* <td>
                 <button
                   className="btn btn-secondary"
                   onClick={() => updateReview(review.id)}
@@ -131,12 +131,12 @@ const DashboardWatchlistsComponent = () => {
                 >
                   Delete
                 </button>
-              </td>
+              </td> */}
             </tr>
             <tr>
               <td>11th July 2025</td>
               <td>Superman</td>
-              <td>
+              {/* <td>
                 <button
                   className="btn btn-secondary"
                   onClick={() => updateReview(review.id)}
@@ -150,12 +150,12 @@ const DashboardWatchlistsComponent = () => {
                 >
                   Delete
                 </button>
-              </td>
+              </td> */}
             </tr>
             <tr>
               <td>19th Dec</td>
               <td>Avatar: Fire and Ash</td>
-              <td>
+              {/* <td>
                 <button
                   className="btn btn-secondary"
                   onClick={() => updateReview(review.id)}
@@ -169,7 +169,7 @@ const DashboardWatchlistsComponent = () => {
                 >
                   Delete
                 </button>
-              </td>
+              </td> */}
             </tr>
             {/* </tr>)
               }

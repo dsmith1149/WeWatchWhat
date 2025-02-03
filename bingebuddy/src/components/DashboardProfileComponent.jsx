@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import SidebarComponent from "./SidebarComponent";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const DashboardProfileComponent = (subject) => {
   // const [username, setUserName] = useState("");
@@ -19,10 +20,7 @@ const DashboardProfileComponent = (subject) => {
     anotherGenre: "",
   });
 
-  const { id } = useParams();
-
   const [errors, setErrors] = useState();
-
   const navigator = useNavigate();
 
   useEffect(() => {
@@ -46,11 +44,16 @@ const DashboardProfileComponent = (subject) => {
         throw new Error("Failed to fetch user profile");
       }
 
-      //
-      console.log("Subject " + subject);
+      console.log("Before decoding token");
+
+      const decodedToken = jwtDecode(token);
+      const tokenValue = decodedToken.sub.toString();
+      console.log("Token Value: " + tokenValue);
+
+      // ----
 
       const response = await axios.get(
-        "http://localhost:8080/user-profile/{subject}",
+        "http://localhost:8080/user-profile" + "/" + tokenValue,
         {
           headers: {
             Authorization: `Bearer ${token}`,

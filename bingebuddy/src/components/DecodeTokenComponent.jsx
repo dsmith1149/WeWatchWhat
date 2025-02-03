@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
 import DashboardProfileComponent from "./DashboardProfileComponent";
+import { jwtDecode } from "jwt-decode";
 
 const DecodeTokenComponent = () => {
-  const [subject, setSubject] = useState(null);
-
   useEffect(() => {
     const decodeToken = () => {
       try {
@@ -13,8 +11,8 @@ const DecodeTokenComponent = () => {
           throw new Error("No token found");
         }
 
-        const decodedToken = jwt_decode(token);
-        setSubject(decodedToken.subject);
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded Token:  " + decodedToken.username);
       } catch (error) {
         console.error("Error decoding token", error);
       }
