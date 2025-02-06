@@ -27,15 +27,24 @@ public class AuthService {
     }
 
     public JwtResponse authenticate(JwtRequest authRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        User user = userEntityRepository.findByUsername(userDetails.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+            User user = userEntityRepository.findByUsername(userDetails.getUsername());
 
-        String token = jwtUtil.generateToken(user.getId().toString());      // ID as claim
-       //String token = jwtUtil.generateToken(userDetails.getUsername());
+            if (user == null) {
+                throw new RuntimeException("User not found in the database.");
+            }
 
-        return new JwtResponse(token);
+            String token = jwtUtil.generateToken(userDetails.getUsername());
+
+            return new JwtResponse(token, user);
+        } catch (Exception e) {
+            throw new RuntimeException("Authentication failed: " + e.getMessage());
+        }
     }
+
 }

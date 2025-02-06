@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -69,12 +70,19 @@ public class UserController {
     }
 
 
-    // login with JWT Token   -- K-WORKS!!
     @PostMapping("/loginjwt")
-    // @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
-        return ResponseEntity.ok(authService.authenticate(authRequest));
+    public ResponseEntity<?> login(@RequestBody JwtRequest authRequest) {
+        JwtResponse authResponse = authService.authenticate(authRequest);
+
+        if (authResponse.getUser() == null || authResponse.getToken() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid username or password"));
+        }
+
+        return ResponseEntity.ok(authResponse);
     }
+
+
 
 
 
@@ -238,16 +246,16 @@ public class UserController {
 
 
     // // Gives a WebSecurity Exception
-//    @GetMapping("/search")
-//    public ResponseEntity<?> searchUsersByUsername(@RequestParam String username) {
-//        List<User> users = userEntityRepository.findByUsernameContaining(username);
-//
-//        if (users.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
-//        }
-//
-//        return ResponseEntity.ok(users);
-//    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsersByUsername(@RequestParam String username) {
+        List<User> users = userEntityRepository.findByUsernameContaining(username);
+
+        if (users.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
+        }
+
+        return ResponseEntity.ok(users);
+    }
 
 }
 

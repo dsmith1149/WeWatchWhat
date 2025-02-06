@@ -16,8 +16,8 @@ public interface UserEntityRepository extends JpaRepository<User, Integer> {
     User findByUsername(String username);
 
     // Gives a WebSecurity Exception
-//    @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))")
-//    List<User> findByUsernameContaining(@Param("username") String username);
+    @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))")
+    List<User> findByUsernameContaining(@Param("username") String username);
 
 
 }

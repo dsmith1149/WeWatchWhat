@@ -1,5 +1,6 @@
 package org.launchcode.BingeBuddy.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class Review extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
+    @JsonBackReference
     private Movie movie;
 
 @Column
