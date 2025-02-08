@@ -1,180 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SidebarComponent from "./SidebarComponent";
-import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const DashboardWatchlistsComponent = () => {
-  const [watchlists, setWatchlists] = useState();
-  const navigate = useNavigate();
+  const [watchlists, setWatchlists] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("PLANNED");
+  const [error, setError] = useState("");
 
-  // useEffect(() => {
-  //   getAllReviews();
-  // }, [])
+  useEffect(() => {
+    fetchWatchlist();
+  }, []);
 
-  // function getAllReviews(){
-  //   listreviews()
-  //   .then((response) => {
-  //     setReviews(response.data);
-  //   }).catch(error => {
-  //     console.error(error);
-  //   })
-  // }
+  const fetchWatchlist = async () => {
+    try {
+      const token = localStorage.getItem("Token");
+      if (!token) {
+        setError("No token found. Please log in.");
+        return;
+      }
 
-  //   function addNewReview(){
-  //     navigator('/add-user') // when Add Employee button is clicked, will take user to /add-employee page
-  //   }
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId || decodedToken.sub;
+      if (!userId) {
+        setError("User ID not found in token.");
+        return;
+      }
 
-  //   function updateReview(id){
-  //     navigator(`/edit-review/${id}`);
-  //   }
+      const response = await axios.get(`http://localhost:8080/user-watchlists/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  //   function removeReview(id){
-  //     console.log(id);
-  //     deleteReview(id).then((response) => {
-  //         getAllReviews();
-  //     }).catch(error => {
-  //         console.log(error);
-  //     })
-  // }
+      setWatchlists(response.data);
+      console.log("Fetched Watchlist:", response.data);
+    } catch (error) {
+      console.error("Error fetching watchlist:", error);
+      setError("Failed to load watchlist.");
+    }
+  };
 
   return (
     <div className="flex">
-      <div>
-        <SidebarComponent />
-      </div>
-
-      {/* <div className='h-screen flex-1 p-7'>
-        <h1 className='center'>
-          User can create / view their Watchlists here
-        </h1>
-      </div> */}
-
+      <SidebarComponent />
       <div className="container">
-        <h2 className="text-center header"> Watchlists </h2>
+        <h2 className="text-center header">Watchlists</h2>
+
+        {error && <p className="text-danger text-center">{error}</p>}
 
         <form className="center">
           <h4>Pick from the list to check out the status of your movies:</h4>
-
-          <select id="watchlists" name="watchlists">
-            <option value="PLANNED">TO BE WATCHED</option>
+          <select id="watchlists" name="watchlists" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+            <option value="PLANNED">PLANNED</option>
             <option value="WATCHING">WATCHING</option>
-            <option value="WATCHED">WATCHED</option>
+            <option value="COMPLETED">COMPLETED</option>
           </select>
         </form>
 
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Date Added</th>
               <th>Movie</th>
-              {/* <th>Action</th> */}
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {/* {
-                reviews.map(review => 
-                  <tr key={review.id}>
-                      <td>{review.created_at}</td>
-                      <td>{review.content}</td>
-                      <td>{review.movieId}</td> */}
-            <tr>
-              <td>14th Feb 2025</td>
-              <td>Captain America: Brave New World</td>
-              {/* <td>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => updateReview(review.id)}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-dark"
-                  onClick={() => removeReview(review.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-              </td> */}
-            </tr>
-            <tr>
-              <td> 23rd May 2025</td>
-              <td>Mission: Impossible – The Final Reckoning</td>
-              {/* <td>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => updateReview(review.id)}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-dark"
-                  onClick={() => removeReview(review.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-              </td> */}
-            </tr>
-            <tr>
-              <td>2nd July 2025</td>
-              <td>Jurassic World Rebirth</td>
-              {/* <td>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => updateReview(review.id)}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-dark"
-                  onClick={() => removeReview(review.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-              </td> */}
-            </tr>
-            <tr>
-              <td>11th July 2025</td>
-              <td>Superman</td>
-              {/* <td>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => updateReview(review.id)}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-dark"
-                  onClick={() => removeReview(review.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-              </td> */}
-            </tr>
-            <tr>
-              <td>19th Dec</td>
-              <td>Avatar: Fire and Ash</td>
-              {/* <td>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => updateReview(review.id)}
-                >
-                  Update
-                </button>
-                <button
-                  className="btn btn-dark"
-                  onClick={() => removeReview(review.id)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
-              </td> */}
-            </tr>
-            {/* </tr>)
-              }
-               */}
-          </tbody>
+  {watchlists
+    .filter((item) => item.status === selectedStatus) 
+    .map((watchlistItem) => {
+      const dateAdded = watchlistItem.scheduledDate
+        ? new Date(watchlistItem.scheduledDate).toLocaleDateString()
+        : "No Date Available";
+
+      const movieTitle = watchlistItem.movie?.title || watchlistItem.movie?.Title || "No Movie Data";
+
+      return (
+        <tr key={watchlistItem.id}>
+          <td>{dateAdded}</td>
+          <td>{movieTitle}</td>
+          <td>{watchlistItem.status}</td>
+        </tr>
+      );
+    })}
+</tbody>
+
         </table>
       </div>
     </div>
@@ -182,3 +91,4 @@ const DashboardWatchlistsComponent = () => {
 };
 
 export default DashboardWatchlistsComponent;
+

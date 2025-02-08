@@ -1,70 +1,112 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import SidebarComponent from "./SidebarComponent";
-import AddToListButton from "./AddToListButton";
-
+import { useNavigate } from "react-router-dom";
 
 export default function SearchMovie() {
-  let tMovies = [];
-  let sMovies = [];
-  let initial = [];
-  let title = "";
-  let poster = "";
-  let movieID = "";
-
   const [searchTerm, setSearchTerm] = useState("");
-  const[showMovies, setShowMovies] = useState(initial)
+  const [showMovies, setShowMovies] = useState([]);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("Token");
+  const user = localStorage.getItem("User");
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-  }
+  };
 
-  const displayMovies = function(movie){
-    return <ul key={movie}>
-      <b key={movie[0]}>{movie[0]}</b>
-      <a key={movie[2]} href={`movie=${movie[2]}`}> <img key={movie[1]} src={movie[1]}></img></a>
-      <b key={`button${movie[0]}`}> {AddToListButton(movie[2])}</b>
-    </ul>
-  }
-     
   const handleSubmit = () => {
-    const fetchData = async () => {
-      const result = await fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=a6836b7c`)
-      result.json().then(json => {
-        for(let item in json["Search"]){
-          title = json["Search"][item]["Title"]
-          poster = json["Search"][item]["Poster"]
-          movieID = json["Search"][item]["imdbID"]
-          tMovies = [title, poster, movieID]
-          sMovies.push(tMovies)
+    fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=a6836b7c`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.Search) {
+          const movies = json.Search.map((movie) => ({
+            title: movie.Title,
+            poster: movie.Poster,
+            imdbId: movie.imdbID,
+          }));
+          setShowMovies(movies);
         }
-        initial = sMovies
-        setShowMovies(initial)
-        sMovies=[];
-      })
+      });
+  };
+
+  
+  const handleAddToWatchlist = (imdbID) => {
+   
+    const token = localStorage.getItem("Token");
+    const storedUser = localStorage.getItem("User");
+
+    if (!token || !storedUser) {
+        alert("You must be logged in to add to your watchlist!");
+        return;
     }
-    fetchData()
-  }
 
-  return(
-     <div className="flex">
-      <div>
-        <SidebarComponent />
-      </div>
-        
+    const user = JSON.parse(storedUser); 
+    if (!user.id) {
+        alert("You must be logged in to add to your watchlist!");
+        return;
+    }
+
+    console.log("✅ Adding to Watchlist for User:", user.id);
+    console.log("🎬 Movie ID:", imdbID);
+    console.log(
+      "🔗 Request URL:",
+      `http://localhost:8080/user-watchlists/${user.id}?imdbId=${imdbID}&status=PLANNED`
+    );
     
-    <div>
+    fetch(`http://localhost:8080/user-watchlists/${user.id}?imdbId=${imdbID}&status=PLANNED`, {
 
-      <h1>Enter the name of a movie!</h1>
-      <b>
-          <input type="text" value={searchTerm} onChange={handleSearch}/>
-          <input type="submit" onClick={handleSubmit}/>
-      </b>
-      <ul>{showMovies.map((x) => displayMovies(x))}</ul>
-      
+        method: "POST",
+        headers: {
+  
+            Authorization: `Bearer ${token}`,
+        },
+       
+    })
+    .then((res) => {
+        if (!res.ok) throw new Error("Failed to add movie to watchlist.");
+        return res.text();
+    })
+    .then(() => {
+        alert("Movie added to watchlist!");
+        navigate(`/dashboard-watchlists/${user.id}`); 
+    })
+    .catch((err) => {
+        console.error(" Error adding to watchlist:", err);
+        alert("Failed to add to watchlist.");
+    });
+};
+  
 
+  const displayMovies = (movie) => {
+    return (
+      <div key={movie.imdbId} className="movie-card">
+        <h3 className="movie-title">{movie.title}</h3>
+        <img
+          src={movie.poster}
+          alt={movie.title}
+          className="movie-poster"
+          onClick={() => navigate(`/single-movie/${movie.imdbId}`)} 
+        />
+        <button
+          className="btn-watchlist"
+          onClick={() => handleAddToWatchlist(movie.imdbId)} 
+        >
+          ➕ Add to Watchlist
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex">
+      <SidebarComponent />
+      <div className="search-container">
+        <h1>Search for a Movie</h1>
+        <input type="text" value={searchTerm} onChange={handleSearch} placeholder="Enter movie title" />
+        <button onClick={handleSubmit} className="search-btn">Search</button>
+        <div className="movie-list">{showMovies.map(displayMovies)}</div>
+      </div>
     </div>
-
-    </div>
-  )
+  );
 }
+
 

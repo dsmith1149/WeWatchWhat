@@ -6,14 +6,12 @@ import { useAuth } from "./AuthContext";
 import validator from "validator";
 
 const LoginPageComponent = () => {
-  // const { setAuth, authUser, setAuthUser, isLoggedIn, setIsLoggedIn } =
-  //   useAuth();
-
+  
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // -------- Checks for errors after 200 msg ----------
 
-  // const { user, logout } = useContext(AuthContextComponent);
+
 
   const [errors, setErrors] = useState({
     username: "",
@@ -24,116 +22,95 @@ const LoginPageComponent = () => {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { user } = useAuth();
+
+
+
+  useEffect(() => {
+    if (user) {
+      console.log("User detected, redirecting...");
+      navigate("/dashboard-main/:userId");
+    }
+  }, [user]);
+
 
   let i = 0; // Counter to track login-password
 
   const handleChangeUsername = (e) => {
-    e.preventDefault();
     setUserName(e.target.value);
-    setErrors("", "");
-    setError("");
+    setErrors((prev) => ({ ...prev, username: "" }));
+    setError(""); 
   };
 
   const handleChangePassword = (e) => {
-    e.preventDefault();
     setPassword(e.target.value);
-    setErrors("", "");
-    setError("");
+    setErrors((prev) => ({ ...prev, password: "" }));
+    setError(""); 
   };
 
   // --- start of Validation ---
-  function validateForm(username, password) {
-    if (username.trim() && password.trim()) {
-      // if characters in username-password, set errorsCopy to empty
-      errorsCopy.username = "";
-      errorsCopy.password = "";
-    } else {
-      errorsCopy.username = "Enter Email & Password"; // if either email or password is empty, display a generic msg for both
-      //errorsCopy.password = "Enter Password";
-      console.log("Enter Email & Password");
-      i++;
-      console.log("Value in i : " + i);
-      return;
-    }
-    if (!validator.isEmail(username)) {
-      errorsCopy.username = "Please enter a valid email"; // msg displayed
-      console.log("Please enter a valid email");
-      console.log("Value in i : " + i);
-      i++;
-      return;
+  const validateForm = (username, password) => {
+    let isValid = true;
+    const errorsCopy = { username: "", password: "" };
+
+    if (!username.trim() || !password.trim()) {
+      errorsCopy.username = "Enter Email & Password";
+      isValid = false;
     }
 
-    if (password.length < 5 || !/\d/.test(password)) {
-      errorsCopy.password =
-        "Password must contain a number & be atleast 8 characters";
-      console.log("Password must contain a number & be atleast 8 characters");
-      i++;
-      console.log("Value in i : " + i);
-      return;
+    if (!validator.isEmail(username)) {
+      errorsCopy.username = "Please enter a valid email";
+      isValid = false;
     }
-  } // --- End of validateForm() ---
+
+    if (password.length < 8 || !/\d/.test(password)) {
+      errorsCopy.password = "Password must contain a number & be at least 8 characters";
+      isValid = false;
+    }
+
+    setErrors(errorsCopy);
+    return isValid;
+  };
+  // --- End of validateForm() ---
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Server side errors
-    setErrors("", ""); // username-password validation
+    setError("");
 
-    validateForm(username, password);
+    if (!validateForm(username, password)) {
+      return;
+    }
 
-    setErrors(errorsCopy);
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/loginjwt",
+        { username, password },
+        { headers: { "Content-Type": "application/json" }, withCredentials: true }
+      );
 
-    if (i <= 0) {
-      const loginData = { username, password };
-      console.log(loginData);
+      if (response.status === 200) {
+        const { token, user } = response.data;
 
-      // http://localhost:8080/login
+        localStorage.setItem("Token", token);
+        localStorage.setItem("User", JSON.stringify(user));
 
-      try {
-        const response = await axios.post(
-          "http://localhost:8080/loginjwt",
-          loginData,
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          }
-        );
+        console.log("Token stored:", localStorage.getItem("Token"));
+        console.log("User stored:", localStorage.getItem("User"));
 
-        const accessToken = response?.data.token;
-        localStorage.setItem("Token", accessToken);
-
-        //setAuth({ loginData, accessToken });
-        // setIsLoggedIn(true);
-        // setAuthUser({ loginData });
-        setUserName("");
-        setPassword("");
-
-        if (response.status === 200) {
-          login(); // useAuth Login-Logout
-          console.log("Login successful");
-          navigate("/dashboard-main/1");
-        } else {
-          const errorData = await response.json();
-          console.log(
-            "From catch after try axios: Login failed for user. Please retry!"
-          );
-          setError(
-            errorData.message &&
-              "From else after 200 msg: Login failed for user. Please retry!"
-          ); // check if this msg is displayed
-          console.log("Login failed");
-        } // end of if
-      } catch (error) {
-        setError("Error logging in! Please retry.");
-        console.error("Error logging in! Please retry.", error);
-
-        //navigate("/");
+        const userId = user.id;
+        navigate(`/dashboard-main/${userId}`);
+      } else {
+        setError("Invalid username or password");
       }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setError("Error logging in! Please retry.");
     }
   };
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleLogin}>
         <div className="container login-container">
           <div className="login-form">
             <h2 className="text-center header">Login to your Account</h2>
@@ -141,8 +118,11 @@ const LoginPageComponent = () => {
             <div className="input-container">
               <input
                 type="email"
+                id="email"
+                name="email"
                 placeholder="Enter email"
                 value={username}
+                autoComplete="email"
                 required
                 onChange={handleChangeUsername}
               />
@@ -150,11 +130,15 @@ const LoginPageComponent = () => {
                 <div className="invalid-feedback"> {errorsCopy.username} </div>
               )}
             </div>
+
             <div className="input-container">
               <input
                 type="password"
+                id="password"
+                name="password"
                 placeholder="Enter password"
                 value={password}
+                autoComplete="current-password"
                 required
                 onChange={handleChangePassword}
               />
@@ -162,11 +146,11 @@ const LoginPageComponent = () => {
                 <div className="invalid-feedback"> {errorsCopy.password} </div>
               )}
             </div>
+
             <div className="input-container">
               <button
                 className="btn btn-primary mb-2 login-button"
-                type="button"
-                onClick={handleLogin}
+                type="submit"
               >
                 Login
               </button>
@@ -174,25 +158,19 @@ const LoginPageComponent = () => {
 
             <div className="login-link">
               <p className="registration-link">
-                Don't have an account?{" "}
-                <a href="/signup">Click here to SignUp</a>
+                Don't have an account? <a href="/signup">Click here to Sign Up</a>
               </p>
             </div>
           </div>
 
-          <p className="cerror" name="errorlabel">
-            {errorsCopy.username}
-            <br />
-            {errorsCopy.password}
-            {error}
+          <p className="cerror">
+            {error && <span>{error}</span>}
           </p>
         </div>
       </form>
 
       <div className="flex">
-        {/* <div className="row g-0 mt-5"> */}
         <div className="home-image"></div>
-        {/* </div> */}
       </div>
     </div>
   );
