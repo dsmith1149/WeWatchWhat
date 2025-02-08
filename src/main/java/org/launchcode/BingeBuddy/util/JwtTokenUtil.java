@@ -14,14 +14,16 @@ public class JwtTokenUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long jwtExpirationMs = 10 * 60 * 60 * 1000;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Integer userId) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", userId)  // Add userId to claims
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key)
                 .compact();
     }
+
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,4 +43,10 @@ public class JwtTokenUtil {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claimsResolver.apply(claims);
     }
+
+    public Integer extractUserId(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.get("userId", Integer.class);
+    }
+
 }

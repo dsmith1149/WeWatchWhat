@@ -47,6 +47,9 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtToken = authHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwtToken);
+                Integer userId = jwtUtil.extractUserId(jwtToken);
+                System.out.println("Extracted User ID: " + userId);
+
             } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token expired. Please log in again.");

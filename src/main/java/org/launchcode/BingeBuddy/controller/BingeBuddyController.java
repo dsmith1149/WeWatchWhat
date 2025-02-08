@@ -4,12 +4,14 @@ import org.launchcode.BingeBuddy.config.APIConfiguration;
 import org.launchcode.BingeBuddy.data.*;
 import org.launchcode.BingeBuddy.model.*;
 import org.launchcode.BingeBuddy.data.CommentRepository;
+import org.launchcode.BingeBuddy.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/")
 public class BingeBuddyController {
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -55,7 +60,7 @@ public class BingeBuddyController {
         Movie movie = restTemplate.getForObject(apiUrl, Movie.class);
 
         if (movie != null) {
-            movieRepository.save(movie); // ✅ Ensure movie is saved before returning
+            movieRepository.save(movie); //
             return ResponseEntity.ok(movie);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -118,6 +123,7 @@ public class BingeBuddyController {
         watchlistEntry.setMovie(movie.get());
         watchlistEntry.setUser(user.get());
         watchlistEntry.setStatus(status);
+        watchlistEntry.setScheduledDate(LocalDate.now());
 
         watchlistRepository.save(watchlistEntry);
         return ResponseEntity.ok("Movie added to watchlist.");
@@ -126,28 +132,36 @@ public class BingeBuddyController {
     // /single-movie/:movieId/reviews)
     @GetMapping("/movies/{imdbId}/reviews")
     public ResponseEntity<List<Review>> getReviews(@PathVariable String imdbId) {
-        Optional<Movie> movie = movieRepository.findByImdbId(imdbId);  // ✅ Find Movie by imdbId
+        Optional<Movie> movie = movieRepository.findByImdbId(imdbId);
 
         if (movie.isEmpty()) {
-            return ResponseEntity.notFound().build();  // ❌ Movie not found, return 404
+            return ResponseEntity.notFound().build();
         }
 
-        List<Review> reviews = reviewRepository.findByMovie(movie.get());  // ✅ Fetch Reviews
+        List<Review> reviews = reviewRepository.findByMovie(movie.get());
         return ResponseEntity.ok(reviews);
     }
 
-    // /single-movie/:movieId/reviews)
     @PostMapping("/movies/{imdbId}/reviews")
     public ResponseEntity<String> createReview(
             @PathVariable String imdbId,
-            @RequestBody Review review) {
+            @RequestBody Review review,
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header.");
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer " prefix
+
+        Integer userId = jwtTokenUtil.extractUserId(token); // Extract userId from JWT
 
         Optional<Movie> movie = movieRepository.findByImdbId(imdbId);
         if (movie.isEmpty()) {
             return ResponseEntity.badRequest().body("Movie not found.");
         }
 
-        Optional<User> user = userEntityRepository.findById(review.getUser().getId());
+        Optional<User> user = userEntityRepository.findById(userId);
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found.");
         }

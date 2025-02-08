@@ -15,14 +15,13 @@ import java.util.Optional;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/users")         // Do not uncomment this!
 public class UserController {
 
     @Autowired
     private UserEntityRepository userEntityRepository;
 
     @Autowired
-    public UserController(UserService userAuthService, AuthService authService){
+    public UserController(UserService userAuthService, AuthService authService) {
         this.userService = userAuthService;
         this.authService = authService;
     }
@@ -31,43 +30,38 @@ public class UserController {
 
     private final AuthService authService;
 
-
-    // -- signup  -- K-WORKS!!
     // http://localhost:8080/register
     @PostMapping("/register")
-    public ResponseEntity<User> registerNewUser(@RequestBody User user){
+    public ResponseEntity<User> registerNewUser(@RequestBody User user) {
 
-         Optional <User> optionalUser = Optional.ofNullable(userEntityRepository.findByUsername(user.getUsername()));
+        Optional<User> optionalUser = Optional.ofNullable(userEntityRepository.findByUsername(user.getUsername()));
 
-            if(optionalUser.isEmpty()){
-                User newUser = userService.addUser(user);
-                return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-            }
-            else{
-                System.out.println("User doesn't exist");
-                return ResponseEntity.status(HttpStatus.CREATED).body(user);
-            }
-    }
-
-
-    // -- login   -- K-WORKS!!
-    // http://localhost:8080/login
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
-        try {
-            boolean isAuthenticated = userService.authenticate(
-                    loginRequest.getUsername(),
-                    loginRequest.getPassword());
-
-            if (isAuthenticated) {
-                return ResponseEntity.ok("Login was successful!");
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");
+        if (optionalUser.isEmpty()) {
+            User newUser = userService.addUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        } else {
+            System.out.println("User doesn't exist");
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
     }
+
+//    // http://localhost:8080/login
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+//        try {
+//            boolean isAuthenticated = userService.authenticate(
+//                    loginRequest.getUsername(),
+//                    loginRequest.getPassword());
+//
+//            if (isAuthenticated) {
+//                return ResponseEntity.ok("Login was successful!");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");
+//        }
+//    }
 
 
     @PostMapping("/loginjwt")
@@ -83,34 +77,16 @@ public class UserController {
     }
 
 
-
-
-
-    // -- User Profile (Ready for use)  -- K-WORKS!!
     // http://localhost:8080/user-profile/{userId}
     @GetMapping("user-profile/{userId}")
-    public ResponseEntity<User> getUserProfileByID(@PathVariable Integer userId){
+    public ResponseEntity<User> getUserProfileByID(@PathVariable Integer userId) {
 
-        Optional <User> optionalUser = userEntityRepository.findById(userId);
+        Optional<User> optionalUser = userEntityRepository.findById(userId);
         User newUser = userService.getUser(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-    // Works!! D.S.
-    // http://localhost:8080/users/userdetails?userId=1
-    // http://localhost:8080/users/userdetails?userId=3
     @PostMapping("/userdetails")
     public ResponseEntity<String> addUserDetails(@RequestParam Integer userId,
                                                  @RequestParam(required = false) String genre,
@@ -132,8 +108,6 @@ public class UserController {
         return ResponseEntity.ok("User details updated successfully.");
     }
 
-    // Works!!
-    // http://localhost:8080/users/1
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
         Optional<User> user = userEntityRepository.findById(userId);
@@ -146,8 +120,6 @@ public class UserController {
 
 
 
-
-    // Works!!
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> userEntities = userEntityRepository.findAll();
@@ -155,8 +127,6 @@ public class UserController {
     }
 
 
-    // Works
-    // http://localhost:8080/users/add-test-user
     @PostMapping("/add-test-user")
     public ResponseEntity<String> addTestUser() {
         Optional<User> existingUser = userEntityRepository.findById(10);
@@ -177,9 +147,7 @@ public class UserController {
     }
 
 
-    // Works
-    // http://localhost:8080/users/update/1
-    // http://localhost:8080/users/update/6?email=sda@gmail.com
+
     @PutMapping("update/{userId}")
     public ResponseEntity<User> updateUserDetails(@PathVariable Integer userId,
                                                   @RequestParam(required = false) String email,
@@ -218,44 +186,18 @@ public class UserController {
     }
 
 
-    // Works
-    // http://localhost:8080/users/search?email=sda@gmail.com
-    // http://localhost:8080/users/search?email=julie@cooks.com
 
+//    // // Gives a WebSecurity Exception
 //    @GetMapping("/search")
-//    public ResponseEntity<User> searchUserByEmailOrUsername(
-//            @RequestParam(required = false) String email,
-//            @RequestParam(required = false) String username) {
+//    public ResponseEntity<?> searchUsersByUsername(@RequestParam String username) {
+//        List<User> users = userEntityRepository.findByUsernameContaining(username);
 //
-//        User user;
-//
-////        if (email != null) {
-////            user = userRepository.findByEmail(email);
-////        } else if (username != null) {
-//
-//        if (username != null) {
-//            user = userRepository.findByUsername(username);
-//        } else {
-//            return ResponseEntity.badRequest().body(null);
+//        if (users.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
 //        }
 //
-//        return user.map(ResponseEntity::ok)
-//                .orElseGet(() -> ResponseEntity.notFound().build());
+//        return ResponseEntity.ok(users);
 //    }
-
-
-
-    // // Gives a WebSecurity Exception
-    @GetMapping("/search")
-    public ResponseEntity<?> searchUsersByUsername(@RequestParam String username) {
-        List<User> users = userEntityRepository.findByUsernameContaining(username);
-
-        if (users.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found.");
-        }
-
-        return ResponseEntity.ok(users);
-    }
 
 }
 

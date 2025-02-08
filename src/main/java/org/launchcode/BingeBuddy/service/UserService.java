@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired // added now
     private final UserEntityRepository userEntityRepository;
@@ -55,7 +55,7 @@ public class UserService {
             throw new BadCredentialsException("User not found.");
         }
 
-        if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {  // ✅ Correct password validation
+        if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Invalid password.");
         }
 

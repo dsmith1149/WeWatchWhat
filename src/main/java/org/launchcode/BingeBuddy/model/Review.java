@@ -31,7 +31,7 @@ public class Review extends AbstractEntity {
     @JsonBackReference
     private Movie movie;
 
-@Column
+    @Column
     private String apiId;
 
 
@@ -62,7 +62,6 @@ public class Review extends AbstractEntity {
     public void setMovie(Movie movie) {
         this.movie = movie;
     }
-
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

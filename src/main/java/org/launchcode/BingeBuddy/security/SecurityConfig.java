@@ -64,10 +64,8 @@ public class SecurityConfig {
                         .requestMatchers("/comments/**").permitAll()
                         .requestMatchers("/user-watchlists/**").permitAll()
                         .requestMatchers("/watchlist/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasRole("USER")
                         .anyRequest().authenticated()
-                        // Secure all other endpoints
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

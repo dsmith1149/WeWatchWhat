@@ -39,7 +39,7 @@ public class AuthService {
                 throw new RuntimeException("User not found in the database.");
             }
 
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            String token = jwtUtil.generateToken(userDetails.getUsername(), user.getId());
 
             return new JwtResponse(token, user);
         } catch (Exception e) {
