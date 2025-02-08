@@ -109,19 +109,29 @@ public class BingeBuddyController {
             @RequestParam String imdbId,
             @RequestParam WatchlistStatus status) {
 
-        Optional<Movie> movie = movieRepository.findByImdbId(imdbId);
-        if (movie.isEmpty()) {
-            return ResponseEntity.badRequest().body("Movie not found.");
+        Optional<Movie> movieOpt = movieRepository.findByImdbId(imdbId);
+
+        Movie movie;
+        if (movieOpt.isPresent()) {
+            movie = movieOpt.get();
+        } else {
+            String apiUrl = String.format("%s?i=%s&apikey=%s", apiConfig.getApiUrl(), imdbId, apiConfig.getApiKey());
+            movie = restTemplate.getForObject(apiUrl, Movie.class);
+
+            if (movie == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Movie not found in database or API.");
+            }
+            movieRepository.save(movie);
         }
 
-        Optional<User> user = userEntityRepository.findById(userId);
-        if (user.isEmpty()) {
+        Optional<User> userOpt = userEntityRepository.findById(userId);
+        if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found.");
         }
 
         Watchlist watchlistEntry = new Watchlist();
-        watchlistEntry.setMovie(movie.get());
-        watchlistEntry.setUser(user.get());
+        watchlistEntry.setMovie(movie);
+        watchlistEntry.setUser(userOpt.get());
         watchlistEntry.setStatus(status);
         watchlistEntry.setScheduledDate(LocalDate.now());
 
@@ -152,13 +162,22 @@ public class BingeBuddyController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header.");
         }
 
-        String token = authHeader.substring(7); // Remove "Bearer " prefix
-
-        Integer userId = jwtTokenUtil.extractUserId(token); // Extract userId from JWT
+        String token = authHeader.substring(7);
+        Integer userId = jwtTokenUtil.extractUserId(token);
 
         Optional<Movie> movie = movieRepository.findByImdbId(imdbId);
+
         if (movie.isEmpty()) {
-            return ResponseEntity.badRequest().body("Movie not found.");
+
+            String apiUrl = String.format("%s?i=%s&apikey=%s", apiConfig.getApiUrl(), imdbId, apiConfig.getApiKey());
+            Movie fetchedMovie = restTemplate.getForObject(apiUrl, Movie.class);
+
+            if (fetchedMovie != null) {
+                movieRepository.save(fetchedMovie); // Save to local database
+                movie = Optional.of(fetchedMovie);
+            } else {
+                return ResponseEntity.badRequest().body("Movie not found in the external API.");
+            }
         }
 
         Optional<User> user = userEntityRepository.findById(userId);
@@ -174,6 +193,7 @@ public class BingeBuddyController {
         reviewRepository.save(review);
         return ResponseEntity.ok("Review created successfully.");
     }
+
 
     // /reviews/:reviewId/comments)
     @GetMapping("/reviews/{reviewId}/comments")
