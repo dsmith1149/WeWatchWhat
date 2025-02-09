@@ -31,8 +31,6 @@ public class Review extends AbstractEntity {
     @JsonBackReference
     private Movie movie;
 
-    @Column
-    private String apiId;
 
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -79,12 +77,6 @@ public class Review extends AbstractEntity {
         this.updatedAt = updatedAt;
     }
 
-    public String getApiId() {
-        return apiId;
-    }
 
-    public void setApiId(String apiId) {
-        this.apiId = apiId;
-    }
 }
 

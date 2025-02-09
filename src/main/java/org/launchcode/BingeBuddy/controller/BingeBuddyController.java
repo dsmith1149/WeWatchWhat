@@ -204,7 +204,14 @@ public class BingeBuddyController {
 
     // /reviews/:reviewId/comments)
     @PostMapping("/reviews/{reviewId}/comments")
-    public ResponseEntity<String> createComment(@PathVariable Integer reviewId, @RequestBody Comment comment) {
+    public ResponseEntity<String> createComment(@PathVariable Integer reviewId, @RequestBody Comment comment,  @RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header.");
+        }
+
+        String token = authHeader.substring(7);
+        Integer userId = jwtTokenUtil.extractUserId(token);
+
         Optional<Review> review = reviewRepository.findById(reviewId);
         if (review.isEmpty()) {
             return ResponseEntity.badRequest().body("Review not found.");
@@ -213,7 +220,6 @@ public class BingeBuddyController {
         comment.setReview(review.get());
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUpdatedAt(LocalDateTime.now());
-
         commentRepository.save(comment);
         return ResponseEntity.ok("Comment added successfully.");
     }
