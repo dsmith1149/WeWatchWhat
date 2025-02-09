@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 const ReviewsRatingsComponent = ({ imdbId }) => {
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
   const [reviewText, setReviewText] = useState("");
   const [reviewScore, setReviewScore] = useState("5");
   const [reviews, setReviews] = useState([]);
@@ -72,13 +74,58 @@ const ReviewsRatingsComponent = ({ imdbId }) => {
         console.log("Review Response:", data);
         setReviews([...reviews, { content: reviewText, rating: reviewScore }]);
         setReviewText("");
-        setReviewScore("5");
+        setReviewScore("");
       })
       .catch((err) => {
         console.error("Failed to add review:", err);
         alert("Failed to add review.");
       });
+
+
   };
+
+
+  const handleAddComment = () => {
+    if(!userId || !reviewText){
+      console.error("Error: Missing review...", { reviewText, userId });
+      return;
+    }
+    const requestHeaders = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    console.log("Request Headers:", requestHeaders);
+
+    fetch(`http://localhost:8080/reviews/${reviewId}/comments`, {
+      method: "POST",
+      headers: requestHeaders,
+      body: JSON.stringify({
+        userId: userId,
+        content: commentText,
+      }),
+    })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Failed to add comment. Status: ${res.status}`);
+
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return res.json();
+      } else {
+        return res.text();
+      }
+    })
+    .then((data) => {
+      console.log("Comment Response:", data);
+      setReviews([...comments, { content: commentText }]);
+      setCommentText("");
+    })
+    .catch((err) => {
+      console.error("Failed to add comment:", err);
+      alert("Failed to add .");
+    });
+
+  }
 
   return (
     <div>

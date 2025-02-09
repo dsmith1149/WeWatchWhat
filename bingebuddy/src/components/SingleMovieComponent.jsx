@@ -42,7 +42,7 @@ const SingleMovieComponent = () => {
       .finally(() => setLoading(false));
   }, [imdbId]);
 
-  // ✅ Add to Watchlist
+ 
   const handleAddToWatchlist = () => {
     if (!userId) {
       alert("You must be logged in to add to your watchlist!");
@@ -58,7 +58,7 @@ const SingleMovieComponent = () => {
     })
       .then(() => {
         alert("Movie added to watchlist!");
-        navigate("/dashboard-watchlists"); 
+        navigate("/dashboard-watchlists/" + userId); 
       })
       .catch(() => alert("Failed to add to watchlist."));
   };

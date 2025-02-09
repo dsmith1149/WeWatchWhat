@@ -6,16 +6,16 @@
   bottom: 0;
   width: 100%;
   height: 50px;
-  background-color: darkblue;
+  background-color: darkgray;
   text-align: center;
   font-size: 15px;
   color: white;
 }
 
 .navbar-custom {
-  background-color: darkblue;
+  background-color: gold;
   text-align: center;
-  color: white;
+  color: darkslategray;
 }
 
 .header {
@@ -29,8 +29,8 @@
 }
 
 #nav-dropdown {
-  color: white;
-  background-color: darkblue;
+  color: darkslategray;
+  background-color: gold;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 15px;
 }
@@ -110,7 +110,7 @@
 }
 
 .registration-link a {
-  color: #007bff;
+  color: gold;
   text-decoration: none;
 }
 
@@ -130,7 +130,7 @@
 }
 
 .sidebar {
-  color: #081a51;
+  color: gold;
 }
 
 .App-card {
@@ -246,7 +246,7 @@
   padding: 5px;
 }
 .container-dashmain > div {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: darkgray;
   padding: 10px;
 }
 .container-dashmain > div.header {
@@ -255,6 +255,7 @@
 }
 .container-dashmain > div.menu {
   grid-area: menu;
+  
 }
 .container-dashmain > div.content {
   grid-area: content;

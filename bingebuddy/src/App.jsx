@@ -128,7 +128,7 @@ function App() {
               }
             ></Route>
             <Route
-              path="/dashboard-watchlists/"
+              path="/dashboard-watchlists/:userId"
               element={
                 <ProtectedRoute>
                   <NavBarComponent />
