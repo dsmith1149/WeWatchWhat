@@ -42,29 +42,40 @@ const SingleMovieComponent = () => {
       .finally(() => setLoading(false));
   }, [imdbId]);
 
- 
+  // ✅ Add to Watchlist
   const handleAddToWatchlist = () => {
-    if (!userId) {
-      alert("You must be logged in to add to your watchlist!");
-      return;
+    const storedUser = localStorage.getItem("User");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+    if (!user || !user.id) {
+        alert("You must be logged in to add to your watchlist!");
+        return;
     }
 
-    fetch(`http://localhost:8080/user-watchlists?imdbId=${imdbId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    console.log("✅ Adding to Watchlist for User:", user.id);
+    console.log("🎬 Movie ID:", imdbId);
+    
+    fetch(`http://localhost:8080/user-watchlists/${user.id}?imdbId=${imdbId}&status=PLANNED`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
     })
-      .then(() => {
+    .then((res) => {
+        if (!res.ok) throw new Error("Failed to add movie to watchlist.");
+        return res.text();
+    })
+    .then(() => {
         alert("Movie added to watchlist!");
-        navigate("/dashboard-watchlists/" + userId); 
-      })
-      .catch(() => alert("Failed to add to watchlist."));
-  };
+        navigate(`/dashboard-watchlists/${user.id}`);
+    })
+    .catch((err) => {
+        console.error("❌ Error adding to watchlist:", err);
+        alert("Failed to add to watchlist.");
+    });
+};
 
-  if (loading) return <p>Loading movie details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="flex">
