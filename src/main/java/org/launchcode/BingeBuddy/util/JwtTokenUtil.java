@@ -11,13 +11,14 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long jwtExpirationMs = 10 * 60 * 60 * 1000;
+    private final String secretKey = "your-very-secure-secret-key-with-minimum-32-characters";
+    private final Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    private final long jwtExpirationMs = 30 * 60 * 1000;
 
     public String generateToken(String username, Integer userId) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("userId", userId)  // Add userId to claims
+                .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key)
