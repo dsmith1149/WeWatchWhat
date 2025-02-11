@@ -36,13 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = null;
         String jwtToken = null;
 
-        // Skip filtering for login and registration routes
         if (request.getServletPath().equals("/api/auth/loginjwt") || request.getServletPath().equals("/register")) {
             chain.doFilter(request, response);
             return;
         }
 
-        // Extract JWT from Authorization header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwtToken = authHeader.substring(7);
             try {
@@ -61,11 +59,10 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        // Validate token and set authentication
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwtToken, userDetails.getUsername())) {
+            if (jwtUtil.validateToken(jwtToken)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);

@@ -63,7 +63,7 @@ public class BingeBuddyController {
             movieRepository.save(movie); //
             return ResponseEntity.ok(movie);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(movie);
         }
     }
 
@@ -82,18 +82,57 @@ public class BingeBuddyController {
     }
 
     // /user-reviews/:userId)
-    @GetMapping("/user-reviews/{userId}")
-    public ResponseEntity<List<Review>> getAllReviewsByUserID(@PathVariable Integer userId) {
+    @GetMapping("/user-reviews")
+    public ResponseEntity<?> getUserReviews(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header.");
+        }
+
+        String token = authHeader.substring(7);
+        Integer userId;
+        try {
+            userId = jwtTokenUtil.extractUserId(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+        }
+
         List<Review> reviewList = reviewRepository.findByUserId(userId);
+
+        if (reviewList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No reviews found for this user.");
+        }
+
         return ResponseEntity.ok(reviewList);
     }
 
+
     // /user-comments/:userId)
-    @GetMapping("/user-comments/{userId}")
-    public ResponseEntity<List<Comment>> getAllCommentsByUserID(@PathVariable Integer userId) {
+
+    @GetMapping("/user-comments")
+    public ResponseEntity<?> getUserComments(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header.");
+        }
+
+        String token = authHeader.substring(7);
+        Integer userId;
+        try {
+            userId = jwtTokenUtil.extractUserId(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+        }
+
+
         List<Comment> commentList = commentRepository.findByUserId(userId);
+
+
+        if (commentList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No comments found for this user.");
+        }
+
         return ResponseEntity.ok(commentList);
     }
+
 
     // /user-watchlists/:userId)
     @GetMapping("/user-watchlists/{userId}")
@@ -195,7 +234,7 @@ public class BingeBuddyController {
     }
 
 
-    // /reviews/:reviewId/comments)
+
     @GetMapping("/reviews/{reviewId}/comments")
     public ResponseEntity<List<Comment>> getCommentsByReview(@PathVariable Integer reviewId) {
         List<Comment> comments = commentRepository.findByReview_Id(reviewId);
@@ -225,7 +264,7 @@ public class BingeBuddyController {
     }
 
     // /review-rate/:reviewId)
-    @GetMapping("/review-rate/{reviewId}")
+    @GetMapping("/review/{reviewId}")
     public ResponseEntity<Review> getReviewById(@PathVariable Integer reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
         return review.map(ResponseEntity::ok)

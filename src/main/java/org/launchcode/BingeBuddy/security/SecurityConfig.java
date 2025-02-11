@@ -5,6 +5,7 @@ import  org.launchcode.BingeBuddy.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -55,19 +56,18 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/signup").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/loginjwt").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/movies/**").permitAll()
-                        .requestMatchers("/reviews/**").permitAll()
-                        .requestMatchers("/comments/**").permitAll()
-                        .requestMatchers("/user-watchlists/**").permitAll()
-                        .requestMatchers("/watchlist/**").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/signup", "/login", "/loginjwt", "/register").permitAll()
+                                .requestMatchers("/movies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll() // Allow only GET for reviews
+                                .requestMatchers(HttpMethod.GET, "/comments/**").permitAll() // Allow only GET for comments
+                                .requestMatchers(HttpMethod.POST, "/reviews/**").authenticated() // Require authentication for POST
+                                .requestMatchers(HttpMethod.POST, "/comments/**").authenticated() // Require authentication for POST
+                                .requestMatchers("/user-watchlists/**").authenticated()
+                                .requestMatchers("/watchlist/**").authenticated()
+                                .anyRequest().authenticated()
+                        )
 
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

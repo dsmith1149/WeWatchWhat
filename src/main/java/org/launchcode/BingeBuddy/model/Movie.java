@@ -26,7 +26,6 @@ public class Movie extends AbstractEntity {
     @JsonProperty("Year")
     private String year;
 
-
     @Column(nullable = true)
     @JsonProperty("Poster")
     private String poster;

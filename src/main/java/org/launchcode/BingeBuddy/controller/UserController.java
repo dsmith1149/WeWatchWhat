@@ -32,18 +32,17 @@ public class UserController {
 
     // http://localhost:8080/register
     @PostMapping("/register")
-    public ResponseEntity<User> registerNewUser(@RequestBody User user) {
-
+    public ResponseEntity<?> registerNewUser(@RequestBody User user) {
         Optional<User> optionalUser = Optional.ofNullable(userEntityRepository.findByUsername(user.getUsername()));
 
-        if (optionalUser.isEmpty()) {
-            User newUser = userService.addUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        } else {
-            System.out.println("User doesn't exist");
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
+
+        User newUser = userService.addUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
+
 
 //    // http://localhost:8080/login
 //    @PostMapping("/login")
@@ -68,7 +67,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody JwtRequest authRequest) {
         JwtResponse authResponse = authService.authenticate(authRequest);
 
-        if (authResponse.getUser() == null || authResponse.getToken() == null) {
+        if (authResponse == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid username or password"));
         }
@@ -91,18 +90,15 @@ public class UserController {
     public ResponseEntity<String> addUserDetails(@RequestParam Integer userId,
                                                  @RequestParam(required = false) String genre,
                                                  @RequestParam(required = false) String anotherGenre) {
-        // Fetch the user by ID
         Optional<User> userOptional = userEntityRepository.findById(userId);
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("User not found.");
         }
 
-        // Update user details
         User user = userOptional.get();
         if (genre != null) user.setGenre(genre);
         if (anotherGenre != null) user.setAnotherGenre(anotherGenre);
 
-        // Save the updated user
         userEntityRepository.save(user);
 
         return ResponseEntity.ok("User details updated successfully.");
@@ -117,7 +113,6 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 
     @GetMapping("/all")

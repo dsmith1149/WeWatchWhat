@@ -15,18 +15,8 @@ public class User extends AbstractEntity {
     private String lastName;
     private String genre;
     private String anotherGenre;
-//    private String email;
-
     private String role;
 
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    @Override
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
 
 
     public User() {
