@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import CommentsComponent from "./CommentsComponent";
 
 const ReviewsRatingsComponent = ({ imdbId }) => {
   const [commentText, setCommentText] = useState("");
@@ -85,48 +86,6 @@ const ReviewsRatingsComponent = ({ imdbId }) => {
   };
 
 
-  const handleAddComment = () => {
-    if(!userId || !reviewText){
-      console.error("Error: Missing review...", { reviewText, userId });
-      return;
-    }
-    const requestHeaders = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    console.log("Request Headers:", requestHeaders);
-
-    fetch(`http://localhost:8080/reviews/${reviewId}/comments`, {
-      method: "POST",
-      headers: requestHeaders,
-      body: JSON.stringify({
-        userId: userId,
-        content: commentText,
-      }),
-    })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Failed to add comment. Status: ${res.status}`);
-
-      const contentType = res.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        return res.json();
-      } else {
-        return res.text();
-      }
-    })
-    .then((data) => {
-      console.log("Comment Response:", data);
-      setReviews([...comments, { content: commentText }]);
-      setCommentText("");
-    })
-    .catch((err) => {
-      console.error("Failed to add comment:", err);
-      alert("Failed to add .");
-    });
-
-  }
-
   return (
     <div>
       <h2>Reviews & Ratings</h2>
@@ -147,12 +106,18 @@ const ReviewsRatingsComponent = ({ imdbId }) => {
         <button onClick={handleAddReview}>Submit Review</button>
       </div>
       <h3>Reviews</h3>
-      {reviews.length === 0 ? <p>No reviews yet.</p> : reviews.map((rev, idx) => (
-        <div key={idx}>
-          <p>{rev.content}</p>
-          <span>⭐ {rev.rating}</span>
-        </div>
-      ))}
+      {reviews.length === 0 ? (
+        <p>No reviews yet.</p>
+      ) : (
+        reviews.map((review) => (
+          <div key={review.id} className="border p-4">
+            <p>{review.content}</p>
+            <span>⭐ {review.rating}</span>
+
+            <CommentsComponent reviewId={review.id} />
+          </div>
+        ))
+      )}
     </div>
   );
 };

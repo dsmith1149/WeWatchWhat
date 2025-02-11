@@ -1,219 +1,76 @@
 import React, { useEffect, useState } from "react";
 import SidebarComponent from "./SidebarComponent";
-import { useNavigate } from "react-router-dom";
-import Mufasa from "../Images/Movies/Mufasa.jpg";
-import Despicable from "../Images/Movies/DespicableMe4.jpg";
-import Godzilla from "../Images/Movies/GodzillaKong.jpg";
-import InsideOut from "../Images/Movies/InsideOut.png";
-import Moana from "../Images/Movies/Moana.png";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const DashboardReviewComponent = () => {
-  const [reviews, setReviews] = useState();
-  const navigator = useNavigate();
+  const [userReviews, setUserReviews] = useState([]);
+  const [errors, setErrors] = useState("");
 
-  // useEffect(() => {
-  //   getAllReviews();
-  // }, [])
+  useEffect(() => {
+    loadReviews();
+  }, []);
 
-  // function getAllReviews(){
-  //   listreviews()
-  //   .then((response) => {
-  //     setReviews(response.data);
-  //   }).catch(error => {
-  //     console.error(error);
-  //   })
-  // }
+  const loadReviews = async () => {
+    try {
+      const token = localStorage.getItem("Token");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
 
-  //   function addNewReview(){
-  //     navigator('/add-user') // when Add Employee button is clicked, will take user to /add-employee page
-  //   }
+      // Debugging: Check if token is correct
+      console.log("Token being sent:", token);
 
-  //   function updateReview(id){
-  //     navigator(`/edit-review/${id}`);
-  //   }
+      const decodedToken = jwtDecode(token);
+      console.log("Decoded Token:", decodedToken); // Debugging JWT claims
 
-  //   function removeReview(id){
-  //     console.log(id);
-  //     deleteReview(id).then((response) => {
-  //         getAllReviews();
-  //     }).catch(error => {
-  //         console.log(error);
-  //     })
-  // }
+      const userId = decodedToken.userId || decodedToken.sub; // Ensure correct claim
+
+      // Send authenticated request
+      const response = await axios.get(`http://localhost:8080/user-reviews`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setUserReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setErrors(error.response?.data?.error || error.message);
+    }
+  };
 
   return (
     <div className="flex">
-      <div>
-        <SidebarComponent />
-      </div>
-
-      {/* <div className='h-screen flex-1 p-7'>
-        <h1 className='center'>
-          User can view the Reviews they wrote here
-        </h1>    
-      </div> */}
-
-      <div className="container ">
-        <h2 className="text-center header"> Reviews </h2>
-        <div className="table-wrapper">
-          <table className="table table-striped table-bordered">
-            <thead>
+      <SidebarComponent />
+      <div className="p-4">
+        <h2 className="text-lg font-bold mb-4">User Reviews</h2>
+        {errors && <p className="text-red-500">{errors}</p>}
+        <table className="table-auto border-collapse border border-gray-500">
+          <thead>
+            <tr>
+              <th className="border border-gray-500 px-4 py-2">Review</th>
+              <th className="border border-gray-500 px-4 py-2">Updated / Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userReviews.length > 0 ? (
+              userReviews.map((review) => (
+                <tr key={review.id}>
+                  <td className="border border-gray-500 px-4 py-2">{review.content}</td>
+                  <td className="border border-gray-500 px-4 py-2">{new Date(review.updatedAt).toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <th>Movies</th>
-                <th>Review</th>
+                <td colSpan="2" className="text-center py-4">No reviews found.</td>
               </tr>
-            </thead>
-            <tbody>
-              {/* {
-                reviews.map(review => 
-                  <tr key={review.id}>
-                      <td>{review.created_at}</td>
-                      <td>{review.content}</td>
-                      <td>{review.movieId}</td> */}
-
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Godzilla}
-                    alt="Godzilla x Kong: The New Empire"
-                  ></img>
-                </td>
-                <td>
-                  <p>Loved the movie!!</p>
-                  <p>2nd April 2024</p>
-
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={InsideOut}
-                    alt="Inside Out 2"
-                  ></img>
-                </td>
-                <td>
-                  <p>Fantastic! My family had a fun time!</p>
-                  <p>25th June 2024</p>
-
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Despicable}
-                    alt="Despicable Me 4"
-                  ></img>
-                </td>
-                <td>
-                  <p>Would watch it again! An all around entertainer</p>
-                  <p>15th July 2024</p>
-
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img className="image-size" src={Moana} alt="Moana 2"></img>
-                </td>
-                <td>
-                  <p>Superb! My family's new favorite</p>
-                  <p>10th Dec 2024</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Mufasa}
-                    alt="Mufasa: The Lion King"
-                  ></img>
-                </td>
-                <td>
-                  <p>
-                    Already booked tickets for tomorrow. That's how good it is!
-                  </p>
-                  <p>25th Dec 2024</p>
-
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    {" "}
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    {" "}
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              {/* </tr>)
-              }
-               */}
-            </tbody>
-          </table>
-        </div>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
 
 export default DashboardReviewComponent;
+
+

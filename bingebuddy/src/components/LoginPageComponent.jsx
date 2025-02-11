@@ -29,7 +29,7 @@ const LoginPageComponent = () => {
   useEffect(() => {
     if (user) {
       console.log("User detected, redirecting...");
-      navigate("/dashboard-main/");
+      navigate(`/dashboard-main/`);
     }
   }, [user]);
 

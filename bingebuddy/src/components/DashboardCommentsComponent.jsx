@@ -1,218 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SidebarComponent from "./SidebarComponent";
-import { useNavigate } from "react-router-dom";
-import Mufasa from "../Images/Movies/Mufasa.jpg";
-import Despicable from "../Images/Movies/DespicableMe4.jpg";
-import Godzilla from "../Images/Movies/GodzillaKong.jpg";
-import InsideOut from "../Images/Movies/InsideOut.png";
-import Moana from "../Images/Movies/Moana.png";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const DashboardCommentsComponent = () => {
-  const [comments, setComments] = useState();
-  const navigate = useNavigate();
+  const [userComments, setUserComments] = useState([]); // Store multiple comments
+  const [errors, setErrors] = useState("");
 
-  // useEffect(() => {
-  //   getAllReviews();
-  // }, [])
+  useEffect(() => {
+    loadComments();
+  }, []);
 
-  // function getAllReviews(){
-  //   listreviews()
-  //   .then((response) => {
-  //     setReviews(response.data);
-  //   }).catch(error => {
-  //     console.error(error);
-  //   })
-  // }
+  const loadComments = async () => {
+    try {
+      const token = localStorage.getItem("Token");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
 
-  //   function addNewReview(){
-  //     navigator('/add-user') // when Add Employee button is clicked, will take user to /add-employee page
-  //   }
+      // Debugging: Check if token is correct
+      console.log("Token being sent:", token);
 
-  //   function updateReview(id){
-  //     navigator(`/edit-review/${id}`);
-  //   }
+      const decodedToken = jwtDecode(token);
+      console.log("Decoded Token:", decodedToken); // Debugging JWT claims
 
-  //   function removeReview(id){
-  //     console.log(id);
-  //     deleteReview(id).then((response) => {
-  //         getAllReviews();
-  //     }).catch(error => {
-  //         console.log(error);
-  //     })
-  // }
+      // Send authenticated request
+      const response = await axios.get("http://localhost:8080/user-comments", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setUserComments(response.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setErrors(error.response?.data?.error || error.message);
+    }
+  };
 
   return (
     <div className="flex">
-      <div>
-        <SidebarComponent />
-      </div>
+      <SidebarComponent />
+      <div className="p-4">
+        <h2 className="text-lg font-bold mb-4">User Comments</h2>
 
-      {/* <div className='h-screen flex-1 p-7'>
-        <h1 className='center'>
-          User can view their comments here
-        </h1>
-      </div> */}
+        {errors && <p className="text-red-500">{errors}</p>}
 
-      <div className="container">
-        <h2 className="text-center header"> Comments </h2>
-        <div className="table-wrapper">
-          <table className="table table-striped table-bordered">
-            <thead>
+        <table className="table-auto border-collapse border border-gray-500">
+          <thead>
+            <tr>
+              <th className="border border-gray-500 px-4 py-2">Comment</th>
+              <th className="border border-gray-500 px-4 py-2">Updated / Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userComments.length > 0 ? (
+              userComments.map((comment) => (
+                <tr key={comment.id}>
+                  <td className="border border-gray-500 px-4 py-2">{comment.content}</td>
+                  <td className="border border-gray-500 px-4 py-2">{new Date(comment.updatedAt).toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <th>Movies</th>
-                <th>Comments</th>
+                <td colSpan="2" className="text-center py-4">No comments found.</td>
               </tr>
-            </thead>
-            <tbody>
-              {/* {
-                reviews.map(review => 
-                  <tr key={review.id}>
-                      <td>{review.created_at}</td>
-                      <td>{review.content}</td>
-                      <td>{review.movieId}</td> */}
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Mufasa}
-                    alt="Mufasa: The Lion King"
-                  ></img>
-                </td>
-                <td>
-                  <p> Agreed, a full-fledged family movie!</p>
-                  <p>27th Dec 2025</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img className="image-size" src={Moana} alt="Moana 2"></img>
-                </td>
-                <td>
-                  <p>Yes!</p>
-                  <p>10th December 2024</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    {" "}
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    {" "}
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Godzilla}
-                    alt="Godzilla x Kong"
-                  ></img>
-                </td>
-                <td>
-                  <p>
-                    Just enough of a thriller for my 10-year old. Would watch it
-                    again.
-                  </p>
-                  <p>4th April 2024</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    {" "}
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    {" "}
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={InsideOut}
-                    alt="Inside Out 2"
-                  ></img>
-                </td>
-                <td>
-                  <p>Yes, good family entertainer</p>
-                  <p>7th July 2024</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <img
-                    className="image-size"
-                    src={Mufasa}
-                    alt="Mufasa: The Lion King"
-                  ></img>
-                </td>
-                <td>
-                  <p>We loved it too!</p>
-                  <p>2nd Jan 2025</p>
-                  {/* <button
-                    className="btn btn-secondary"
-                    onClick={() => updateReview(review.id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-dark"
-                    onClick={() => removeReview(review.id)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    {" "}
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-              {/* </tr>)
-              }
-               */}
-            </tbody>
-          </table>
-        </div>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
 
 export default DashboardCommentsComponent;
+
+

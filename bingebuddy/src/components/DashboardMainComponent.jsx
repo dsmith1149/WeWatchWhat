@@ -29,9 +29,9 @@ const DashboardMainComponent = () => {
   const Menus = [
     { title: "Dashboard", src: "Chart_fill", path: `/dashboard-main/${userId}` },
     { title: "Profile", src: "User", path: `/user-profile/${userId}` },
-    { title: "Reviews", src: "Chat", path: `/user-reviews/${userId}` },
+    { title: "Reviews", src: "Chat", path: `/user-reviews/` },
     { title: "Comments", src: "Folder", path: `/user-comments/${userId}` },
-    { title: "Watchlists", src: "Calendar", path: `/user-watchlists/${userId}` },
+    { title: "Watchlists", src: "Calendar", path: `/dashboard-watchlists/${userId}` },
     { title: "Trends", src: "Chart", path: `/user-trends/${userId}` },
     { title: "Search Movies", src: "Search", path: "/search-movie" },
     { title: "Search Users", src: "Search", path: "/search-user" },

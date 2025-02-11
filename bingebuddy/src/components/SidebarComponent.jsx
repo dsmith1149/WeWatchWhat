@@ -3,17 +3,20 @@ import { useState } from "react";
 
 const SidebarComponent = () => {
   const [open, setOpen] = useState(true);
+  const [userId, setUserId] = useState();
+  
   const Menus = [
-    { title: "Dashboard", src: "Chart_fill", path: "/dashboard-main/1" },
-    { title: "Profile", src: "User", path: "/user-profile/1" },
-    { title: "Reviews", src: "Chat", path: "/user-reviews/1" },
-    { title: "Comments", src: "Folder", path: "/user-comments/1" },
-    { title: "Watchlists ", src: "Calendar", path: "/user-watchlists/1" },
-    { title: "Trends", src: "Chart", path: "/user-trends/1" },
+    { title: "Dashboard", src: "Chart_fill", path: `/dashboard-main/${userId}` },
+    { title: "Profile", src: "User", path: `/user-profile/${userId}` },
+    { title: "Reviews", src: "Chat", path: `/user-reviews/${userId}` },
+    { title: "Comments", src: "Folder", path: `/user-comments/${userId}` },
+    { title: "Watchlists", src: "Calendar", path: `/dashboard-watchlists/${userId}` },
+    { title: "Trends", src: "Chart", path: `/user-trends/${userId}` },
     { title: "Search Movies", src: "Search", path: "/search-movie" },
     { title: "Search Users", src: "Search", path: "/search-user" },
-    //{ title: "Settings", src: "Setting", path:"/user-settings/1" },
   ];
+
+
 
   return (
     <div className="flex">
