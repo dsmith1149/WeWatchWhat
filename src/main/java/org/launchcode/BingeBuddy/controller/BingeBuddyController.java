@@ -251,11 +251,15 @@ public class BingeBuddyController {
         String token = authHeader.substring(7);
         Integer userId = jwtTokenUtil.extractUserId(token);
 
+        User user = userEntityRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Optional<Review> review = reviewRepository.findById(reviewId);
         if (review.isEmpty()) {
             return ResponseEntity.badRequest().body("Review not found.");
         }
 
+        comment.setUserEntity(user);
         comment.setReview(review.get());
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUpdatedAt(LocalDateTime.now());

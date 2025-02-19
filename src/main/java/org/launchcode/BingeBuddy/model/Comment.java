@@ -1,5 +1,6 @@
 package org.launchcode.BingeBuddy.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class Comment extends AbstractEntity {
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @JsonProperty("user")
     public User getUserEntity() {
         return user;
     }
