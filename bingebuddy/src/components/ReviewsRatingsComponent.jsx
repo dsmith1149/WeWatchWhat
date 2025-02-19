@@ -111,6 +111,7 @@ const ReviewsRatingsComponent = ({ imdbId }) => {
       ) : (
         reviews.map((review) => (
           <div key={review.id} className="border p-4">
+            <p><strong>{review.user.username || "Unknown User"}</strong>({new Date(review.createdAt).toLocaleString()})</p>
             <p>{review.content}</p>
             <span>⭐ {review.rating}</span>
 

@@ -15,7 +15,7 @@ const CommentsComponent = ({ reviewId }) => {
     }
 
     fetchComments();
-  }, [reviewId]);
+  }, [reviewId, token]);
 
   const fetchComments = async () => {
     try {
@@ -35,7 +35,6 @@ const CommentsComponent = ({ reviewId }) => {
       return;
     }
   
-    const token = localStorage.getItem("Token");
     if (!token) {
       setError("You must be logged in to comment.");
       return;
@@ -56,14 +55,15 @@ const CommentsComponent = ({ reviewId }) => {
       );
   
       console.log("Comment Response:", response.data);
-      setComments([...comments, { content: commentText, createdAt: new Date() }]);
+      setComments([...comments, response.data]); 
       setCommentText("");
-      setError(""); // Clear errors if successful
+      setError(""); 
     } catch (error) {
       console.error("Error adding comment:", error.response?.data || error.message);
       setError(error.response?.data || "Failed to add comment.");
     }
   };
+  
   
 
   return (
@@ -90,9 +90,10 @@ const CommentsComponent = ({ reviewId }) => {
         ) : (
           comments.map((comment, idx) => (
             <div key={idx} className="border-b py-2">
+              <p><strong>{(comment.user && comment.user.username)}</strong></p>
               <p>{comment.content}</p>
               <span className="text-sm text-gray-500">
-                {new Date(comment.createdAt).toLocaleString()}
+                {comment.createdAt ? new Date(comment.createdAt).toLocaleString() : "Just now"}
               </span>
             </div>
           ))
